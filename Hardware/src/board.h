@@ -9,6 +9,3 @@
 
 void Board_Init(void);
 void Board_Task(void);
-
-uint32_t board_buttons_read(void);
-uint32_t get_buttons_current_states(void);
