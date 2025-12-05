@@ -1,10 +1,9 @@
-###### Software ######
-# Ignore Visual Studio temporary files, build results, and
-# user-specific files
-Software/.vs/
-Software/bin/
-Software/obj/
-Software/ConsoleDeck.csproj.user
+# Ignore Visual Studio temporary files, build results, and user-specific files
+.vs/
+*/**/.vs/
+*/**/bin/
+*/**/obj/
+*/**/*.user
 
 ###### Hardware ######
 # Ignore build results

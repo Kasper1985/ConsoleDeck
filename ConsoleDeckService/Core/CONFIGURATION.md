@@ -35,15 +35,15 @@ The `appsettings.json` file contains the ConsoleDeck configuration under the `"C
 
 ConsoleDeck buttons send key codes 0xF1 through 0xF9 (241-249 decimal):
 
-- **Button 1**: 0xF1 (241)
-- **Button 2**: 0xF2 (242)
-- **Button 3**: 0xF3 (243)
-- **Button 4**: 0xF4 (244)
+- **Button 9**: 0xF1 (241)
+- **Button 8**: 0xF2 (242)
+- **Button 7**: 0xF3 (243)
+- **Button 6**: 0xF4 (244)
 - **Button 5**: 0xF5 (245)
-- **Button 6**: 0xF6 (246)
-- **Button 7**: 0xF7 (247)
-- **Button 8**: 0xF8 (248)
-- **Button 9**: 0xF9 (249)
+- **Button 4**: 0xF6 (246)
+- **Button 3**: 0xF7 (247)
+- **Button 2**: 0xF8 (248)
+- **Button 1**: 0xF9 (249)
 
 ## Action Types
 

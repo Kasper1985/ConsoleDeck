@@ -48,7 +48,7 @@ ConsoleDeck/
 
 ### Components
 - **Microcontroller**: Raspberry Pi (RP2040) Zero
-- **Buttons**: 10 programmable keys
+- **Buttons**: 9 programmable keys and 1 Media key (Play/Pause)
 - **Rotary Encoder**: KY-040 module for volume/media control
 - **LEDs**: WS2812 addressable RGB LEDs
 - **USB Interface**: HID Consumer Control device
@@ -73,8 +73,8 @@ The resulting `HID_Device.uf2` file can be flashed to the Pico by holding BOOTSE
 
 | Button | Key Code | Description |
 |--------|----------|-------------|
-| 1-9    | 0xF1-0xF9 (241-249) | Programmable action buttons |
-| 0     | Media Play/Pause | Media control |
+| 9-1    | 0xF1-0xF9 (241-249) | Programmable action buttons |
+| 0      | Media Play/Pause | Media control |
 | Rotary Press | Volume Mute | Mute audio |
 | Rotary CW | Volume Up | Increase volume |
 | Rotary CCW | Volume Down | Decrease volume |
