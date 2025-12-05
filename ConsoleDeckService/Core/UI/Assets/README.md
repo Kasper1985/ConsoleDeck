@@ -2,7 +2,7 @@
 
 ## Tray Icon
 
-The system tray icon should be placed in this directory as `tray-icon.ico` (Windows) or `tray-icon.png` (Linux/macOS).
+The system tray icon should be placed in this directory as `app-icon.ico` (Windows) or `app-icon.png` (Linux/macOS).
 
 ### Icon Requirements:
 - **Format**: ICO (Windows), PNG (Linux/macOS)
@@ -19,6 +19,6 @@ If no icon is provided, the system will use the default application icon.
 
 ### Adding the Icon:
 1. Create your icon file
-2. Save it as `ConsoleDeckService/UI/Assets/tray-icon.ico` (or .png)
+2. Save it as `ConsoleDeckService/UI/Assets/app-icon.ico` (or .png)
 3. Update the project file to include it as an embedded resource
 4. The icon will be automatically loaded by AvaloniaTrayProvider
