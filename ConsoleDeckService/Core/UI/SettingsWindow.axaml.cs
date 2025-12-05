@@ -58,15 +58,13 @@ public partial class SettingsWindow : Window
             else
             {
                 _logger.LogWarning("Configuration validation failed");
-                await ShowMessageBox("Validation Error", 
-                    "Configuration validation failed. Please check the logs for details.");
+                await ShowMessageBox("Validation Error", "Configuration validation failed. Please check the logs for details.");
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to save configuration");
-            await ShowMessageBox("Error", 
-                $"Failed to save settings: {ex.Message}");
+            await ShowMessageBox("Error", $"Failed to save settings: {ex.Message}");
         }
     }
 
@@ -104,6 +102,7 @@ public partial class SettingsWindow : Window
             Title = title,
             Width = 400,
             Height = 200,
+            Background = this.Background,
             WindowStartupLocation = WindowStartupLocation.CenterOwner,
             CanResize = false
         };
@@ -111,22 +110,25 @@ public partial class SettingsWindow : Window
         var okButton = new Button
         {
             Content = "OK",
+            HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Center,
             HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Bottom,
             Width = 100
         };
         okButton.Click += (s, e) => messageBox.Close();
 
-        messageBox.Content = new StackPanel
+        messageBox.Content = new Grid
         {
+            RowDefinitions = new RowDefinitions("*,Auto"),
             Margin = new Thickness(20),
-            Spacing = 16,
+            RowSpacing = 16,
             Children =
             {
                 new TextBlock
                 {
                     Text = message,
                     TextWrapping = Avalonia.Media.TextWrapping.Wrap,
-                    FontSize = 14
+                    FontSize = 14,
                 },
                 okButton
             }
