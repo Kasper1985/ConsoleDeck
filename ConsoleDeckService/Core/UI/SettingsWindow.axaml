@@ -1,0 +1,365 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:ConsoleDeckService.Core.UI.ViewModels"
+        xmlns:models="clr-namespace:ConsoleDeckService.Core.Models"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+        x:Class="ConsoleDeckService.Core.UI.SettingsWindow"
+        x:DataType="vm:SettingsViewModel"
+        Title="ConsoleDeck Settings"
+        Width="900" Height="700"
+        MinWidth="800" MinHeight="600"
+        Icon="/Core/UI/Assets/app-icon.ico"
+        WindowStartupLocation="CenterScreen"
+        Name="MainWindow">
+
+    <Window.Styles>
+        <!-- Always use Dark Theme -->
+        <Style Selector="Window">
+            <Setter Property="Background" Value="#1E1E1E"/>
+        </Style>
+
+        <!-- TextBlock Styling -->
+        <Style Selector="TextBlock">
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+        </Style>
+
+        <!-- TextBox, ComboBox, NumericUpDown Styling -->
+        <Style Selector="TextBox, ComboBox, NumericUpDown">
+            <Setter Property="Background" Value="#2D2D30"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#3F3F46"/>
+        </Style>
+
+        <!-- CheckBox Styling -->
+        <Style Selector="CheckBox">
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+        </Style>
+        
+        <Style Selector="CheckBox /template/ Border#NormalRectangle">
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        
+        <Style Selector="CheckBox /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="TextBlock.Foreground" Value="#FFFFFF"/>
+        </Style>
+        
+        <Style Selector="CheckBox:pointerover /template/ Border#NormalRectangle">
+            <Setter Property="BorderBrush" Value="#4FC3F7"/>
+            <Setter Property="Background" Value="#2D2D30"/>
+        </Style>
+        
+        <Style Selector="CheckBox:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="TextBlock.Foreground" Value="#FFFFFF"/>
+        </Style>
+        
+        <Style Selector="CheckBox:checked /template/ Border#NormalRectangle">
+            <Setter Property="Background" Value="#4FC3F7"/>
+            <Setter Property="BorderBrush" Value="#4FC3F7"/>
+        </Style>
+
+        <!-- Button Styling -->
+        <Style Selector="Button">
+            <Setter Property="Background" Value="#0078D4"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Margin" Value="4"/>
+        </Style>
+
+        <Style Selector="Button:pointerover">
+            <Setter Property="Background" Value="#106EBE"/>
+        </Style>
+
+        <!-- TabControl and TabItem Styling -->
+        <Style Selector="TabControl">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
+        <Style Selector="TabItem">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+        </Style>
+
+        <Style Selector="TabItem:selected">
+            <Setter Property="Foreground" Value="#4FC3F7"/>
+        </Style>
+
+        <!-- Section Border Styling -->
+        <Style Selector="Border.section">
+            <Setter Property="Background" Value="#252526"/>
+            <Setter Property="BorderBrush" Value="#3F3F46"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+
+        <!-- Header and Label Styling -->
+        <Style Selector="TextBlock.header">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+        </Style>
+
+        <Style Selector="TextBlock.label">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+            <Setter Property="Foreground" Value="#E0E0E0"/>
+        </Style>
+
+        <!-- Info Border Styling -->
+        <Style Selector="Border.info">
+            <Setter Property="Background" Value="#1A237E"/>
+            <Setter Property="BorderBrush" Value="#3949AB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style Selector="Border.info TextBlock">
+            <Setter Property="Foreground" Value="#E3F2FD"/>
+        </Style>
+
+        <!-- Action Bar Styling -->
+        <Style Selector="Border.actionbar">
+            <Setter Property="Background" Value="#252526"/>
+            <Setter Property="BorderBrush" Value="#3F3F46"/>
+        </Style>
+
+        <!-- ComboBox popup items -->
+        <Style Selector="ComboBoxItem">
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="*,Auto">
+        <!-- Main Content -->
+        <TabControl Grid.Row="0" Margin="8">
+            <!-- General Settings Tab -->
+            <TabItem Header="General Settings">
+                <ScrollViewer>
+                    <StackPanel Margin="16" Spacing="8">
+                        <!-- Device Settings -->
+                        <Border Classes="section">
+                            <StackPanel>
+                                <TextBlock Classes="header" Text="HID Device Settings"/>
+                                
+                                <TextBlock Classes="label" Text="Vendor ID (Hex)"/>
+                                <TextBox Text="{Binding VendorId, StringFormat={}{0:X}}"
+                                        Watermark="e.g., CAFE"
+                                        Width="200"
+                                        HorizontalAlignment="Left"
+                                        Margin="0,0,0,12"/>
+
+                                <TextBlock Classes="label" Text="Product ID (Hex, Optional)"/>
+                                <TextBox Text="{Binding ProductId, StringFormat={}{0:X}}"
+                                        Watermark="Leave empty for any"
+                                        Width="200"
+                                        HorizontalAlignment="Left"
+                                        Margin="0,0,0,12"/>
+
+                                <TextBlock Text="The Vendor and Product IDs identify your ConsoleDeck device."
+                                          FontSize="11"
+                                          Opacity="0.7"
+                                          TextWrapping="Wrap"
+                                          Margin="0,0,0,8"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Behavior Settings -->
+                        <Border Classes="section">
+                            <StackPanel>
+                                <TextBlock Classes="header" Text="Behavior"/>
+                                
+                                <TextBlock Classes="label" Text="Debounce Time (ms)"/>
+                                <NumericUpDown Value="{Binding DebounceMs}"
+                                              Minimum="0"
+                                              Maximum="5000"
+                                              Increment="50"
+                                              Width="200"
+                                              HorizontalAlignment="Left"
+                                              Margin="0,0,0,12"/>
+                                
+                                <TextBlock Text="Prevents accidental double-triggers. Recommended: 200ms."
+                                          FontSize="11"
+                                          Opacity="0.7"
+                                          Margin="0,0,0,12"/>
+
+                                <CheckBox IsChecked="{Binding ShowNotifications}"
+                                         Content="Show notifications when actions execute"/>
+                                
+                                <CheckBox IsChecked="{Binding VerboseLogging}"
+                                         Content="Enable verbose logging (for debugging)"/>
+                                
+                                <CheckBox IsChecked="{Binding AutoStart}"
+                                         Content="Start with Windows (requires reinstallation)"
+                                         IsEnabled="False"
+                                         Opacity="0.5"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Key Mappings Tab -->
+            <TabItem Header="Key Mappings">
+                <Grid RowDefinitions="Auto,*">
+                    <!-- Instructions -->
+                    <Border Grid.Row="0" 
+                            Classes="info"
+                            Padding="12" 
+                            Margin="8">
+						<Grid ColumnDefinitions="*,Auto"> <!-- Left column for text (flexible), right for image (auto-sized) -->
+                            <StackPanel Grid.Column="0">  <!-- TextBlocks in left column -->
+                                <TextBlock Text="Configure Actions for ConsoleDeck Buttons"
+                                            FontWeight="SemiBold"
+                                            Margin="0,0,0,4"/>
+                                <TextBlock Text="Each button (#1 - #9) can trigger an action. Select the action type and configure the target."
+                                            TextWrapping="Wrap"
+                                            FontSize="12"
+                                            Opacity="0.8"/>
+                            </StackPanel>
+							<Panel Grid.Column="1"
+								    Height="150"
+								    Width="245"
+								    VerticalAlignment="Center"
+								    Margin="16, 0, 0, 0">
+							    <Image Source="avares://ConsoleDeckService/Core/UI/Assets/ConsoleDeck.png"/>
+							</Panel>
+						</Grid>
+                    </Border>
+
+                    <!-- Key Mappings List -->
+                    <ScrollViewer Grid.Row="1" Margin="8">
+                        <ItemsControl ItemsSource="{Binding KeyMappings}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="vm:KeyActionMappingViewModel">
+                                    <Border Classes="section" Margin="8">
+                                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="150,*">
+                                            <!-- Key Display -->
+                                            <TextBlock Grid.Row="0" Grid.Column="0"
+                                                      Text="{Binding KeyDisplayName}"
+                                                      FontSize="16"
+                                                      FontWeight="Bold"
+                                                      VerticalAlignment="Center"
+                                                      Margin="0,0,16,12"/>
+
+                                            <!-- Enable Checkbox -->
+                                            <CheckBox Grid.Row="0" Grid.Column="1"
+                                                     IsChecked="{Binding IsEnabled}"
+                                                     Content="Enabled"
+                                                     VerticalAlignment="Center"
+                                                     Margin="0,0,0,12"/>
+
+                                            <!-- Action Name -->
+                                            <TextBlock Grid.Row="1" Grid.Column="0"
+                                                      Classes="label"
+                                                      Text="Action Name"
+                                                      VerticalAlignment="Center"/>
+                                            <TextBox Grid.Row="1" Grid.Column="1"
+                                                    Text="{Binding ActionName}"
+                                                    Watermark="e.g., Open Notepad"
+                                                    Margin="0,0,0,8"/>
+
+                                            <!-- Action Type -->
+                                            <TextBlock Grid.Row="2" Grid.Column="0"
+                                                      Classes="label"
+                                                      Text="Action Type"
+                                                      VerticalAlignment="Center"/>
+                                            <ComboBox Grid.Row="2" Grid.Column="1"
+                                                     SelectedItem="{Binding ActionType}"
+                                                     ItemsSource="{Binding $parent[Window].((vm:SettingsViewModel)DataContext).ActionTypes}"
+                                                     HorizontalAlignment="Stretch"
+                                                     Margin="0,0,0,8"/>
+
+                                            <!-- Target (conditionally visible) -->
+                                            <TextBlock Grid.Row="3" Grid.Column="0"
+                                                      Classes="label"
+                                                      Text="Target"
+                                                      VerticalAlignment="Center"
+                                                      IsVisible="{Binding ShowTargetFields}"/>
+                                            <TextBox Grid.Row="3" Grid.Column="1"
+                                                    Text="{Binding ActionTarget}"
+                                                    Watermark="e.g., notepad.exe or https://github.com"
+                                                    IsVisible="{Binding ShowTargetFields}"
+                                                    Margin="0,0,0,8"/>
+
+                                            <!-- Arguments -->
+                                            <TextBlock Grid.Row="4" Grid.Column="0"
+                                                      Classes="label"
+                                                      Text="Arguments (Optional)"
+                                                      VerticalAlignment="Center"
+                                                      IsVisible="{Binding ShowTargetFields}"/>
+                                            <TextBox Grid.Row="4" Grid.Column="1"
+                                                    Text="{Binding ActionArguments}"
+                                                    Watermark="e.g., --debug"
+                                                    IsVisible="{Binding ShowTargetFields}"
+                                                    Margin="0,0,0,8"/>
+
+                                            <!-- Working Directory -->
+                                            <TextBlock Grid.Row="5" Grid.Column="0"
+                                                      Classes="label"
+                                                      Text="Working Directory (Optional)"
+                                                      VerticalAlignment="Center"
+                                                      IsVisible="{Binding ShowTargetFields}"/>
+                                            <TextBox Grid.Row="5" Grid.Column="1"
+                                                    Text="{Binding WorkingDirectory}"
+                                                    Watermark="e.g., C:\Projects"
+                                                    IsVisible="{Binding ShowTargetFields}"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <!-- Bottom Action Bar -->
+        <Border Grid.Row="1" 
+                Classes="actionbar"
+                BorderThickness="0,1,0,0"
+                Padding="16,12">
+            
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                <!-- Unsaved Changes Indicator -->
+                <TextBlock Grid.Column="0"
+                          Text="? Unsaved changes"
+                          VerticalAlignment="Center"
+                          Foreground="#FFA500"
+                          IsVisible="{Binding HasUnsavedChanges}"/>
+
+                <!-- Reload Button -->
+                <Button Grid.Column="1"
+                       Content="Reload"
+                       Name="ReloadButton"
+                       Click="OnReloadClick"/>
+
+                <!-- Cancel Button -->
+                <Button Grid.Column="2"
+                       Content="Cancel"
+                       Name="CancelButton"
+                       Click="OnCancelClick"/>
+
+                <!-- Save Button -->
+                <Button Grid.Column="3"
+                       Content="Save"
+                       Name="SaveButton"
+                       Click="OnSaveClick">
+                    <Button.Styles>
+                        <Style Selector="Button">
+                            <Setter Property="Background" Value="#28A745"/>
+                        </Style>
+                        <Style Selector="Button:pointerover">
+                            <Setter Property="Background" Value="#218838"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

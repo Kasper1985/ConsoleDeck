@@ -9,15 +9,17 @@ public class Worker : BackgroundService
     private readonly IConfigurationService _configService;
     private readonly IHidDeviceMonitor _hidMonitor;
     private readonly ISystemTrayProvider _trayProvider;
+    private readonly ISettingsWindowProvider _settingsWindowProvider;
     private readonly IHostApplicationLifetime _hostLifetime;
     private readonly HidMessageProcessor _messageProcessor;
 
-    public Worker(ILogger<Worker> logger, IConfigurationService configService, IHidDeviceMonitor hidMonitor, ISystemTrayProvider trayProvider, HidMessageProcessor messageProcessor, IHostApplicationLifetime hostLifetime)
+    public Worker(ILogger<Worker> logger, IConfigurationService configService, IHidDeviceMonitor hidMonitor, ISystemTrayProvider trayProvider, ISettingsWindowProvider settingsWindowProvider, HidMessageProcessor messageProcessor, IHostApplicationLifetime hostLifetime)
     {
         _logger = logger;
         _configService = configService;
         _hidMonitor = hidMonitor;
         _trayProvider = trayProvider;
+        _settingsWindowProvider = settingsWindowProvider;
         _messageProcessor = messageProcessor;
         _hostLifetime = hostLifetime;
 
@@ -91,8 +93,7 @@ public class Worker : BackgroundService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Fatal error in ConsoleDeck Service");
-            _trayProvider.ShowNotification("ConsoleDeck Error",
-                "Service encountered a fatal error. Check logs for details.");
+            _trayProvider.ShowNotification("ConsoleDeck Error", "Service encountered a fatal error. Check logs for details.");
             throw;
         }
         finally
@@ -142,10 +143,19 @@ public class Worker : BackgroundService
     {
         _logger.LogInformation("Settings requested from system tray");
 
-        // TODO: Open settings window/editor
-        // For now, just show a notification
-        _trayProvider.ShowNotification("Settings",
-            "Settings editor coming soon!\nEdit appsettings.json manually for now.");
+        // Open settings window
+        Task.Run(async () =>
+        {
+            try
+            {
+                await _settingsWindowProvider.OpenSettingsWindowAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to open settings window");
+                _trayProvider.ShowNotification("Error", "Failed to open settings window. Check logs for details.");
+            }
+        });
     }
 
     private void OnStatusRequested(object? sender, EventArgs e)

@@ -4,6 +4,8 @@ using ConsoleDeckService;
 using ConsoleDeckService.Core.Interfaces;
 using ConsoleDeckService.Core.Services;
 using ConsoleDeckService.Core.Services.Windows;
+using ConsoleDeckService.Core.Services.Linux;
+using ConsoleDeckService.Core.Services.MacOS;
 using ConsoleDeckService.Core.UI;
 using Serilog;
 
@@ -45,15 +47,27 @@ builder.Services.AddSingleton<IConfigurationService, ConfigurationService>();
 if (OperatingSystem.IsWindows())
 {
     builder.Services.AddSingleton<IHidDeviceMonitor, WindowsHidDeviceMonitor>();
+    builder.Services.AddSingleton<INotificationProvider, WindowsNotificationProvider>();
+}
+else if (OperatingSystem.IsLinux())
+{
+    builder.Services.AddSingleton<IHidDeviceMonitor, LinuxHidDeviceMonitor>();
+    builder.Services.AddSingleton<INotificationProvider, LinuxNotificationProvider>();
+}
+else if (OperatingSystem.IsMacOS())
+{
+    builder.Services.AddSingleton<IHidDeviceMonitor, MacOSHidDeviceMonitor>();
+    builder.Services.AddSingleton<INotificationProvider, MacOSNotificationProvider>();
 }
 else
 {
-    throw new PlatformNotSupportedException("Currently only Windows is supported. Linux and macOS support coming soon.");
+    throw new PlatformNotSupportedException("Currently only Windows, Linux, and macOS are supported.");
 }
 
 // Register cross-platform services
 builder.Services.AddSingleton<IActionExecutor, ActionExecutor>();
 builder.Services.AddSingleton<ISystemTrayProvider, AvaloniaTrayProvider>();
+builder.Services.AddSingleton<ISettingsWindowProvider, AvaloniaSettingsWindowProvider>();
 builder.Services.AddSingleton<HidMessageProcessor>();
 
 // Register the Worker service
