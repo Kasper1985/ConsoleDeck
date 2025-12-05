@@ -88,7 +88,7 @@ A modern cross-platform background service with system tray integration built wi
 **Supported Platforms:**
 - Windows
 - Linux (not implemented yet)
-- macOS
+- macOS (not implemented yet)
 
 **Features:**
 - System tray icon with context menu
