@@ -47,7 +47,7 @@ ConsoleDeck/
 ## Hardware
 
 ### Components
-- **Microcontroller**: Raspberry Pi Pico (RP2040)
+- **Microcontroller**: Raspberry Pi (RP2040) Zero
 - **Buttons**: 10 programmable keys
 - **Rotary Encoder**: KY-040 module for volume/media control
 - **LEDs**: WS2812 addressable RGB LEDs
