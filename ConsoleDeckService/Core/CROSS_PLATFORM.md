@@ -130,6 +130,7 @@ When implementing platform support:
 - **libusb**: Linux USB library
 
 ### ConsoleDeck Hardware
-- **Device**: Raspberry Pi Pico (VID: 0xCAFE)
+- **Device**: Raspberry Pi RP2040 Zero (VID: 0xCAFE)
 - **Interface**: USB HID Keyboard
 - **Keys**: 9 buttons sending key codes 0xF1-0xF9
+
