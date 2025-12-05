@@ -74,7 +74,7 @@ The resulting `HID_Device.uf2` file can be flashed to the Pico by holding BOOTSE
 | Button | Key Code | Description |
 |--------|----------|-------------|
 | 1-9    | 0xF1-0xF9 (241-249) | Programmable action buttons |
-| 10     | Media Play/Pause | Media control |
+| 0     | Media Play/Pause | Media control |
 | Rotary Press | Volume Mute | Mute audio |
 | Rotary CW | Volume Up | Increase volume |
 | Rotary CCW | Volume Down | Decrease volume |
