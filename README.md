@@ -15,7 +15,7 @@ A customizable macro deck solution featuring a custom HID hardware device powere
 
 ```
 ConsoleDeck/
-├── Hardware/               # Raspberry Pi Pico firmware
+├── Hardware/               # Raspberry Pi RP2040 Zero firmware
 │   ├── src/               # C source code for HID device
 │   │   ├── main.c         # Main program entry point
 │   │   ├── board.c/h      # Button handling (10 buttons)
