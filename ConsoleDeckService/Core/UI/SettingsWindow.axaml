@@ -238,7 +238,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="vm:KeyActionMappingViewModel">
                                     <Border Classes="section" Margin="8">
-                                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="150,*">
+                                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*">
                                             <!-- Key Display -->
                                             <TextBlock Grid.Row="0" Grid.Column="0"
                                                       Text="{Binding KeyDisplayName}"
@@ -258,54 +258,70 @@
                                             <TextBlock Grid.Row="1" Grid.Column="0"
                                                       Classes="label"
                                                       Text="Action Name"
-                                                      VerticalAlignment="Center"/>
+                                                      VerticalAlignment="Center"
+													  Margin="0,0,16,0"/>
                                             <TextBox Grid.Row="1" Grid.Column="1"
                                                     Text="{Binding ActionName}"
                                                     Watermark="e.g., Open Notepad"
                                                     Margin="0,0,0,8"/>
+											
+											<!-- Action Description -->
+											<TextBlock Grid.Row="2" Grid.Column="0"
+													   Classes="label"
+													   Text="Action Description"
+													   VerticalAlignment="Center"
+													   Margin="0,0,16,0"/>
+                                            <TextBox Grid.Row="2" Grid.Column="1"
+                                                    Text="{Binding ActionDescription}"
+                                                    Watermark="e.g., Opens Notepad for quick notes"
+                                                    Margin="0,0,0,8"/>
 
                                             <!-- Action Type -->
-                                            <TextBlock Grid.Row="2" Grid.Column="0"
+                                            <TextBlock Grid.Row="3" Grid.Column="0"
                                                       Classes="label"
                                                       Text="Action Type"
-                                                      VerticalAlignment="Center"/>
-                                            <ComboBox Grid.Row="2" Grid.Column="1"
+                                                      VerticalAlignment="Center"
+													   Margin="0,0,16,0"/>
+                                            <ComboBox Grid.Row="3" Grid.Column="1"
                                                      SelectedItem="{Binding ActionType}"
                                                      ItemsSource="{Binding $parent[Window].((vm:SettingsViewModel)DataContext).ActionTypes}"
                                                      HorizontalAlignment="Stretch"
                                                      Margin="0,0,0,8"/>
 
                                             <!-- Target (conditionally visible) -->
-                                            <TextBlock Grid.Row="3" Grid.Column="0"
+                                            <TextBlock Grid.Row="4" Grid.Column="0"
                                                       Classes="label"
                                                       Text="Target"
                                                       VerticalAlignment="Center"
-                                                      IsVisible="{Binding ShowTargetFields}"/>
-                                            <TextBox Grid.Row="3" Grid.Column="1"
+                                                      IsVisible="{Binding ShowTargetFields}"
+													  Margin="0,0,16,0"/>
+                                            <TextBox Grid.Row="4" Grid.Column="1"
                                                     Text="{Binding ActionTarget}"
                                                     Watermark="e.g., notepad.exe or https://github.com"
                                                     IsVisible="{Binding ShowTargetFields}"
                                                     Margin="0,0,0,8"/>
 
                                             <!-- Arguments -->
-                                            <TextBlock Grid.Row="4" Grid.Column="0"
+                                            <TextBlock Grid.Row="5" Grid.Column="0"
                                                       Classes="label"
                                                       Text="Arguments (Optional)"
                                                       VerticalAlignment="Center"
-                                                      IsVisible="{Binding ShowTargetFields}"/>
-                                            <TextBox Grid.Row="4" Grid.Column="1"
+                                                      IsVisible="{Binding ShowTargetFields}"
+													   Margin="0,0,16,0"/>
+                                            <TextBox Grid.Row="5" Grid.Column="1"
                                                     Text="{Binding ActionArguments}"
                                                     Watermark="e.g., --debug"
                                                     IsVisible="{Binding ShowTargetFields}"
                                                     Margin="0,0,0,8"/>
 
                                             <!-- Working Directory -->
-                                            <TextBlock Grid.Row="5" Grid.Column="0"
+                                            <TextBlock Grid.Row="6" Grid.Column="0"
                                                       Classes="label"
                                                       Text="Working Directory (Optional)"
                                                       VerticalAlignment="Center"
-                                                      IsVisible="{Binding ShowTargetFields}"/>
-                                            <TextBox Grid.Row="5" Grid.Column="1"
+                                                      IsVisible="{Binding ShowTargetFields}"
+													  Margin="0,0,16,0"/>
+                                            <TextBox Grid.Row="6" Grid.Column="1"
                                                     Text="{Binding WorkingDirectory}"
                                                     Watermark="e.g., C:\Projects"
                                                     IsVisible="{Binding ShowTargetFields}"/>
