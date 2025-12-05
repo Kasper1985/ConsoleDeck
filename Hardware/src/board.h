@@ -1,8 +1,5 @@
 #pragma once
 
-#include <stdint.h>
-#include <stdbool.h>
-
 #define BOARD_BUTTON_COUNT 10
 #define BOARD_FIRST_BUTTON_GPIO 0
 #define KEYCODE_START 0xF0

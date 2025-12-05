@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "led.h"
 #include "board.h"
 #include "rotary_encoder.h"
@@ -33,7 +29,6 @@ int main(void)
 bool ReadOnInterrupt(repeating_timer_t *rt)
 {
 	tud_task();
-	//hid_task();
 	Board_Task();
 	Encoder_Task();
 

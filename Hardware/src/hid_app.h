@@ -1,7 +1,5 @@
 #pragma once
 
-#include <stdbool.h>
-#include <stdint.h>
 #include "tusb.h" // Ensure hid_report_type_t is defined
 
 void hid_task(void);

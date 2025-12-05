@@ -1,6 +1,7 @@
 #include "bsp/board_api.h"
 #include "tusb.h"
 #include "usb_descriptors.h"
+#include "pico/unique_id.h"
 
 /* A combination of interfaces must have a unique product id, since PC will save device driver after the first plug.
  * Same VID/PID with different interface e.g MSC (first), then CDC (later) will possibly cause system error on PC.
@@ -12,7 +13,7 @@
 #define USB_PID           (0x4000 | PID_MAP(CDC, 0) | PID_MAP(MSC, 1) | PID_MAP(HID, 2) | \
                            PID_MAP(MIDI, 3) | PID_MAP(VENDOR, 4) )
 
-#define USB_VID   0xcafe
+#define USB_VID   0xCAFE
 #define USB_BCD   0x0200
 
 //--------------------------------------------------------------------+
@@ -52,7 +53,7 @@ uint8_t const * tud_descriptor_device_cb(void)
 
 uint8_t const desc_hid_report[] =
 {
-  TUD_HID_REPORT_DESC_KEYBOARD( HID_REPORT_ID(REPORT_ID_KEYBOARD )),
+  //TUD_HID_REPORT_DESC_KEYBOARD( HID_REPORT_ID(REPORT_ID_KEYBOARD )),
   TUD_HID_REPORT_DESC_CONSUMER( HID_REPORT_ID(REPORT_ID_CONSUMER_CONTROL )),
 };
 
@@ -164,11 +165,39 @@ static char const *string_desc_arr[] =
 {
   (const char[]) { 0x09, 0x04 }, // 0: is supported language is English (0x0409)
   "Kasper Inc.",                 // 1: Manufacturer
-  "Stream Deck v2",              // 2: Product
-  NULL,                          // 3: Serials will use unique ID if possible
+  "Console Deck",                // 2: Product
+  "SN-01-0000001",               // 3: Serials will use unique ID if possible
 };
 
 static uint16_t _desc_str[32 + 1];
+
+// Convert the board unique ID into a UTF-16 serial string
+static size_t get_serial_utf16(uint16_t *out, size_t max_chars)
+{
+    pico_unique_board_id_t board_id;
+    pico_get_unique_board_id(&board_id);
+    static const char* hex = "0123456789ABCDEF";
+    char buf[2 * sizeof board_id.id];
+    for (size_t i = 0; i < sizeof board_id.id; ++i)
+    {
+        buf[2 * i]     = hex[(board_id.id[i] >> 4) & 0xF];
+        buf[2 * i + 1] = hex[board_id.id[i] & 0xF];
+    }
+    size_t n = sizeof buf;
+    if (n > max_chars) n = max_chars;
+    for (size_t i = 0; i < n; ++i) out[i] = (uint16_t)buf[i];
+    return n;
+}
+
+// Convert the Serial Number into a UTF-16 string
+static size_t board_usb_convert_serial(uint16_t *out, size_t max_chars)
+{
+    const char* serial = string_desc_arr[STRID_SERIAL];
+    size_t n = strlen(serial);
+    if (n > max_chars) n = max_chars;
+    for (size_t i = 0; i < n; ++i) out[i] = (uint16_t)serial[i];
+    return n;
+}
 
 // Invoked when received GET STRING DESCRIPTOR request
 // Application return pointer to descriptor, whose contents must exist long enough for transfer to complete
@@ -183,7 +212,9 @@ uint16_t const *tud_descriptor_string_cb(uint8_t index, uint16_t langid) {
       break;
 
     case STRID_SERIAL:
-      chr_count = board_usb_get_serial(_desc_str + 1, 32);
+      //chr_count = board_usb_get_serial(_desc_str + 1, 32);
+      //chr_count = get_serial_utf16(_desc_str + 1, 32);
+      chr_count = board_usb_convert_serial(_desc_str + 1, 32);
       break;
 
     default:

@@ -37,6 +37,7 @@ pico_enable_stdio_uart(HID_Device 1)
 # Link required libraries
 target_link_libraries(HID_Device
     pico_stdlib
+    pico_unique_id
     tinyusb_device
     hardware_pio
 )

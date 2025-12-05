@@ -1,8 +1,28 @@
 #include "tusb.h"
 #include "usb_descriptors.h"
+#include "led.h"
 
 #include "hid_app.h"
 
+static repeating_timer_t taskInterruptTimer;
+bool LED_Blink(repeating_timer_t *rt)
+{
+    static bool led_state = false;
+    static int count = 0;
+
+    if (led_state) {
+        LED_Clear();
+    } else {
+        LED_SetRGB(0, 0, 255); // Blue blink
+    }
+    led_state = !led_state;
+    count ++;
+
+    if (count >= 6) {
+        return false; // Stop the timer after 6 blinks
+    }
+    return true;
+}
 
 void hid_task(void)
 {
@@ -14,8 +34,8 @@ void hid_task(void)
 // TinyUSB device state callbacks
 void tud_mount_cb(void)
 {
+    add_repeating_timer_ms(100, LED_Blink, NULL, &taskInterruptTimer);
     return;
-    // led_set_blink_interval(1000);
 }
 
 void tud_umount_cb(void)

@@ -14,6 +14,7 @@ static int currentEncoderPosition;
 static int encoderPulses; // The encoder pulses once for every 2 positions
 static tEncoderDirection lastEncoderDirection;
 static tEncoderDirection currentEncoderDirection;
+static bool encoderPulsed = false;
 
 static tGpioPinState GetEncoderPinState(tKy040Pin pin)
 {
@@ -27,6 +28,7 @@ static void ProcessEncoderSwitch(tButtonState state)
 
     if (state == BUTTON_PRESSED)
     {
+        LED_ReportFeedback(KEYBOARD);
         uint16_t key = HID_USAGE_CONSUMER_MUTE;
         tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &key, sizeof(key));
     }
@@ -41,15 +43,19 @@ static void ProcessEncoderPulsed(tEncoderDirection direction)
 {
     if (tud_suspended()) tud_remote_wakeup(); // Wake up host over USB if it is in suspended mode and REMOTE_WAKEUP feature is enabled by host
     if (!tud_hid_ready()) return; // Skip if HID is not ready yet
+
+    LED_ReportFeedback(ROTARY);
     uint16_t key;
     if (direction == ENCODER_DIRECTION_CLOCKWISE)
     {
         key = HID_USAGE_CONSUMER_VOLUME_INCREMENT;
+        encoderPulsed = true;
     }
     else if (direction == ENCODER_DIRECTION_COUNTERCLOCKWISE)
     {
         key = HID_USAGE_CONSUMER_VOLUME_DECREMENT;
-    }
+        encoderPulsed = true;
+    }    
     tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &key, sizeof(key));
 }
 
@@ -123,6 +129,15 @@ void Encoder_Init(void)
 
 void Encoder_Task(void)
 {
+    if (encoderPulsed)
+    {
+        // Release the key after pulsing
+        uint16_t key = 0;
+        tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &key, sizeof(key));
+        encoderPulsed = false;
+        return;
+    }
+
     tGpioPinState currentStateCLK = GetEncoderPinState(KY_040_PIN_CLK);
     tGpioPinState currentStateDT = GetEncoderPinState(KY_040_PIN_DT);
     tGpioPinState currentStateSW = GetEncoderPinState(KY_040_PIN_SW);
@@ -151,6 +166,7 @@ void Encoder_Task(void)
     else if (bothPinsHitNextSyncState)
     {
         UpdateEncoderCountAndSyncState();
+        ProcessEncoderPulsed(ENCODER_DIRECTION_STOPPED);
     }
 
     lastStateCLK = currentStateCLK;

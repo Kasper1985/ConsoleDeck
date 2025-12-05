@@ -2,8 +2,8 @@
 #include "tusb.h"
 #include "usb_descriptors.h"
 #include "enums.h"
-#include "board.h"
 #include "led.h"
+#include "board.h"
 
 static bool lastButtonStates[BOARD_BUTTON_COUNT] = {GPIO_HIGH}; // Initially all buttons unpressed (pull-up)
 
@@ -17,13 +17,19 @@ static void ProcessButton(uint8_t buttonIndex, tButtonState state)
     if (tud_suspended()) tud_remote_wakeup(); // Wake up host over USB if it is in suspended mode and REMOTE_WAKEUP feature is enabled by host
     if (!tud_hid_ready()) return; // Skip if HID is not ready yet
 
-    switch(buttonIndex)
+    uint16_t key = 0;
+    if (state == BUTTON_PRESSED)
+    {
+        key = buttonIndex == 0 ? HID_USAGE_CONSUMER_PLAY_PAUSE : 0xFFF0 + buttonIndex; // Example mapping
+    }
+    tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &key, sizeof(key));
+    /*switch(buttonIndex)
     {
         // Play / Pause button
         case 0:
             if (state == BUTTON_PRESSED)
             {
-                uint16_t key = HID_USAGE_CONSUMER_PLAY_PAUSE;
+                key = HID_USAGE_CONSUMER_PLAY_PAUSE;
                 tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &key, sizeof(key));
             }
             else // BUTTON_RELEASED
@@ -37,15 +43,19 @@ static void ProcessButton(uint8_t buttonIndex, tButtonState state)
         default:
             if (state == BUTTON_PRESSED)
             {
-                uint8_t keycode[6] = {HID_KEY_F13 + buttonIndex - 1, HID_KEY_CONTROL_RIGHT, HID_KEY_SHIFT_RIGHT};
-                tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, keycode);
+                uint16_t key = 0x0FF0 + buttonIndex; // Example mapping
+                tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &key, sizeof(key));
+                //uint8_t keycode[6] = {HID_KEY_F13 + buttonIndex - 1, HID_KEY_CONTROL_RIGHT, HID_KEY_SHIFT_RIGHT};
+                //tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, keycode);
             }
             else // BUTTON_RELEASED
             {
-                tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, NULL);
+                uint16_t key = 0;
+                tud_hid_report(REPORT_ID_CONSUMER_CONTROL, &key, sizeof(key));
+                //tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, NULL);
             }
             break;
-    }
+    }*/
 }
 
 
@@ -82,5 +92,5 @@ void Board_Task(void)
         lastButtonStates[i] = currentState;
     }
 
-    is_any_button_pressed ? LED_ReportMessage(MESSAGE_KEYBOARD) : LED_Clear(); // Indicate button press
+    if (is_any_button_pressed) LED_ReportFeedback(KEYBOARD); // Indicate button press
 }
