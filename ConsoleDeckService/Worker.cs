@@ -26,7 +26,6 @@ public class Worker : BackgroundService
         // Subscribe to tray events
         _trayProvider.ExitRequested += OnExitRequested;
         _trayProvider.SettingsRequested += OnSettingsRequested;
-        _trayProvider.StatusRequested += OnStatusRequested;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -158,26 +157,10 @@ public class Worker : BackgroundService
         });
     }
 
-    private void OnStatusRequested(object? sender, EventArgs e)
-    {
-        _logger.LogInformation("Status requested from system tray");
-
-        var devices = _hidMonitor.GetConnectedDevices().ToList();
-        var deviceCount = devices.Count;
-        var actionCount = _configService.Configuration.KeyMappings.Count;
-
-        var statusMessage = deviceCount > 0
-            ? $"Connected: {string.Join(", ", devices)}\n{actionCount} actions configured"
-            : $"No devices connected\n{actionCount} actions configured";
-
-        _trayProvider.ShowNotification("ConsoleDeck Status", statusMessage, 5000);
-    }
-
     public override void Dispose()
     {
         _trayProvider.ExitRequested -= OnExitRequested;
         _trayProvider.SettingsRequested -= OnSettingsRequested;
-        _trayProvider.StatusRequested -= OnStatusRequested;
 
         base.Dispose();
         GC.SuppressFinalize(this);

@@ -1,6 +1,7 @@
+using System.Text.Json;
 using ConsoleDeckService.Core.Models;
 using ConsoleDeckService.Core.Interfaces;
-using System.Text.Json;
+
 
 namespace ConsoleDeckService.Core.Services;
 
@@ -9,10 +10,7 @@ namespace ConsoleDeckService.Core.Services;
 /// Loads from appsettings.json and supports hot-reload.
 /// </summary>
 public class ConfigurationService(ILogger<ConfigurationService> logger, IConfiguration configuration) : IConfigurationService
-{
-    private readonly ILogger<ConfigurationService> _logger = logger;
-    private readonly IConfiguration _configuration = configuration;
-    
+{    
     private readonly string _configFilePath = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
     private FileSystemWatcher? _fileWatcher;
     private ConsoleDeckConfiguration _currentConfig = new();
@@ -24,22 +22,22 @@ public class ConfigurationService(ILogger<ConfigurationService> logger, IConfigu
 
     public async Task LoadConfigurationAsync()
     {
-        _logger.LogInformation("Loading ConsoleDeck configuration from {ConfigFile}", _configFilePath);
+        logger.LogInformation("Loading ConsoleDeck configuration from {ConfigFile}", _configFilePath);
 
         try
         {
             // Load from IConfiguration (appsettings.json)
-            var configSection = _configuration.GetSection("ConsoleDeck");
+            var configSection = configuration.GetSection("ConsoleDeck");
             
             if (!configSection.Exists())
             {
-                _logger.LogWarning("ConsoleDeck configuration section not found, using defaults");
+                logger.LogWarning("ConsoleDeck configuration section not found, using defaults");
                 _currentConfig = CreateDefaultConfiguration();
             }
             else
             {
                 _currentConfig = configSection.Get<ConsoleDeckConfiguration>() ?? CreateDefaultConfiguration();
-                _logger.LogInformation("Loaded configuration with {Count} key mappings", 
+                logger.LogInformation("Loaded configuration with {Count} key mappings", 
                     _currentConfig.KeyMappings.Count);
             }
 
@@ -50,14 +48,14 @@ public class ConfigurationService(ILogger<ConfigurationService> logger, IConfigu
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to load configuration, using defaults");
+            logger.LogError(ex, "Failed to load configuration, using defaults");
             _currentConfig = CreateDefaultConfiguration();
         }
     }
 
     public async Task SaveConfigurationAsync()
     {
-        _logger.LogInformation("Saving ConsoleDeck configuration to {ConfigFile}", _configFilePath);
+        logger.LogInformation("Saving ConsoleDeck configuration to {ConfigFile}", _configFilePath);
 
         try
         {
@@ -80,19 +78,19 @@ public class ConfigurationService(ILogger<ConfigurationService> logger, IConfigu
             var updatedJson = JsonSerializer.Serialize(rootDict, options);
             await File.WriteAllTextAsync(_configFilePath, updatedJson);
 
-            _logger.LogInformation("Configuration saved successfully");
+            logger.LogInformation("Configuration saved successfully");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to save configuration");
+            logger.LogError(ex, "Failed to save configuration");
             throw;
         }
     }
 
     public async Task ReloadConfigurationAsync()
     {
-        _logger.LogInformation("Reloading configuration");
-        
+        logger.LogInformation("Reloading configuration");
+
         var oldConfig = _currentConfig;
         await LoadConfigurationAsync();
 
@@ -157,29 +155,36 @@ public class ConfigurationService(ILogger<ConfigurationService> logger, IConfigu
                 NotifyFilter = NotifyFilters.LastWrite
             };
 
+            Timer? debounceTimer = null;
             _fileWatcher.Changed += async (sender, e) =>
             {
-                _logger.LogInformation("Configuration file changed, reloading...");
-                
-                // Debounce file changes
-                await Task.Delay(500);
-                
-                try
+                logger.LogInformation("Configuration file changed, reloading...");
+
+                // Dispose of any existing timer to reset the debounce period
+                debounceTimer?.Dispose();
+
+                // Create a new timer with 500ms delay
+                debounceTimer = new(async _ =>
                 {
-                    await ReloadConfigurationAsync();
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Failed to reload configuration after file change");
-                }
+                    debounceTimer?.Dispose();
+                    debounceTimer = null;
+                    try
+                    {
+                        await ReloadConfigurationAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, "Failed to reload configuration after file change.");
+                    }
+                }, null, 500, Timeout.Infinite);
             };
 
             _fileWatcher.EnableRaisingEvents = true;
-            _logger.LogDebug("Configuration file watcher enabled");
+            logger.LogDebug("Configuration file watcher enabled");
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Could not set up configuration file watcher");
+            logger.LogWarning(ex, "Could not set up configuration file watcher");
         }
     }
 

@@ -9,9 +9,7 @@ namespace ConsoleDeckService.Core.UI;
 /// Avalonia-based system tray provider for ConsoleDeck.
 /// Provides a cross-platform system tray icon with menu.
 /// </summary>
-public class AvaloniaTrayProvider(
-    ILogger<AvaloniaTrayProvider> logger,
-    INotificationProvider notificationProvider) : ISystemTrayProvider, IDisposable
+public class AvaloniaTrayProvider(ILogger<AvaloniaTrayProvider> logger, INotificationProvider notificationProvider) : ISystemTrayProvider, IDisposable
 {
     private TrayIcon? _trayIcon;
     private NativeMenu? _trayMenu;
@@ -102,11 +100,11 @@ public class AvaloniaTrayProvider(
         });
     }
 
-    public void ShowNotification(string title, string message, int duration = 3000)
+    public void ShowNotification(string title, string message)
     {
         if (!_isInitialized) return;
 
-        notificationProvider.ShowNotification(title, message, duration);
+        notificationProvider.ShowNotification(title, message);
     }
 
     public void UpdateConnectionStatus(string? deviceName = null)

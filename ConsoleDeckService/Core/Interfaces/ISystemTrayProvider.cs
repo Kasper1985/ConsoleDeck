@@ -37,8 +37,7 @@ public interface ISystemTrayProvider
     /// </summary>
     /// <param name="title">Notification title.</param>
     /// <param name="message">Notification message.</param>
-    /// <param name="duration">Duration in milliseconds (optional).</param>
-    void ShowNotification(string title, string message, int duration = 3000);
+    void ShowNotification(string title, string message);
 
     /// <summary>
     /// Updates the connection status displayed in the tray menu.

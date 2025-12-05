@@ -11,16 +11,22 @@ namespace ConsoleDeckService.Core.Services.Windows;
 /// Falls back to command-line msg.exe if toast notifications fail.
 /// </summary>
 [SupportedOSPlatform("windows")]
-public partial class WindowsNotificationProvider(ILogger<WindowsNotificationProvider> logger) : INotificationProvider
+public partial class WindowsNotificationProvider(ILogger<WindowsNotificationProvider> logger, IConfigurationService configurationService) : INotificationProvider
 {
-    private const string AppId = "ConsoleDeck.Service";
+    private const string AppId = "ConsoleDeck";
     
-    public void ShowNotification(string title, string message, int duration = 3000)
+    public void ShowNotification(string title, string message, int duration = 1000)
     {
         try
         {
+            if (!configurationService.Configuration.ShowNotifications)
+            {
+                logger.LogDebug("Notifications are disabled in configuration");
+                return;
+            }
+
             // Try to show toast notification via PowerShell
-            if (TryShowToastNotification(title, message))
+            if (TryShowToastNotification(title, message, duration))
             {
                 logger.LogDebug("Windows toast notification shown: {Title}", title);
                 return;
@@ -35,7 +41,7 @@ public partial class WindowsNotificationProvider(ILogger<WindowsNotificationProv
         }
     }
 
-    private bool TryShowToastNotification(string title, string message)
+    private bool TryShowToastNotification(string title, string message, int duration)
     {
         try
         {
@@ -43,8 +49,11 @@ public partial class WindowsNotificationProvider(ILogger<WindowsNotificationProv
             var escapedTitle = EscapeXmlString(title);
             var escapedMessage = EscapeXmlString(message);
             
+            // Determine duration based on parameter (Windows Toast supports "short" ~7s or "long" ~25s)
+            var toastDuration = duration <= 10000 ? "short" : "long";
+            
             // Build the XML template with double quotes to avoid PowerShell single-quote escaping issues
-            var xmlTemplate = $"<toast><visual><binding template=\"ToastText02\"><text id=\"1\">{escapedTitle}</text><text id=\"2\">{escapedMessage}</text></binding></visual></toast>";
+            var xmlTemplate = $"<toast duration=\"{toastDuration}\"><visual><binding template=\"ToastText02\"><text id=\"1\">{escapedTitle}</text><text id=\"2\">{escapedMessage}</text></binding></visual></toast>";
             
             // Escape the XML template for PowerShell (escape double quotes with backticks)
             var escapedXml = xmlTemplate.Replace("\"", "`\"");
@@ -139,7 +148,8 @@ try {{
             .Replace(">", "&gt;")
             .Replace("\"", "&quot;")
             .Replace("'", "&apos;")
-            .Replace("\n", " ")
-            .Replace("\r", "");
+            .Replace("\r\n", "&#x0A;")  // Windows line ending
+            .Replace("\n", "&#x0A;")    // Unix line ending
+            .Replace("\r", "");          // Remove orphan carriage returns
     }
 }

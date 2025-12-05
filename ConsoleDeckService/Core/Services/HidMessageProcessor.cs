@@ -167,7 +167,7 @@ public class HidMessageProcessor : IDisposable
         if (action == null)
         {
             _logger.LogWarning("No action configured for key code: 0x{keyCode:X2} ({Decimal})", keyCode, keyCode);
-            _trayProvider?.ShowNotification("No Action Configured", $"0x{keyCode:X2} ({keyCode}) has no action assigned");
+            _trayProvider?.ShowNotification("No Action Configured", $"Button #{0xFA - keyCode} with key code 0x{keyCode:X2} ({keyCode}) has no action assigned");
             return;
         }
 
@@ -189,24 +189,21 @@ public class HidMessageProcessor : IDisposable
                 
                 if (_configService.Configuration.ShowNotifications)
                 {
-                    _trayProvider?.ShowNotification($"0x{keyCode:X2} ({keyCode}) - {action.Name}", 
-                        GetActionDescription(action));
+                    _trayProvider?.ShowNotification($"{action.Name}", $"{GetActionDescription(action)}\nCommand for key code 0x{keyCode:X2} ({keyCode}) was executed.");
                 }
             }
             else
             {
                 _logger.LogWarning("Action '{ActionName}' execution failed", action.Name);
                 
-                _trayProvider?.ShowNotification("Action Failed", 
-                    $"{action.Name} could not be executed");
+                _trayProvider?.ShowNotification("Action Failed", $"{action.Name} could not be executed");
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error executing action '{ActionName}'", action.Name);
             
-            _trayProvider?.ShowNotification("Action Error", 
-                $"Error executing {action.Name}: {ex.Message}");
+            _trayProvider?.ShowNotification("Action Error", $"Error executing {action.Name}: {ex.Message}");
         }
     }
 

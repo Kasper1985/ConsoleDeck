@@ -10,7 +10,7 @@ namespace ConsoleDeckService.Core.Services.Linux;
 [SupportedOSPlatform("linux")]
 public class LinuxNotificationProvider(ILogger<LinuxNotificationProvider> logger) : INotificationProvider
 {
-    public void ShowNotification(string title, string message, int duration = 3000)
+    public void ShowNotification(string title, string message, int duration = 1000)
     {
         logger.LogWarning("Linux notifications are not yet implemented");
         logger.LogInformation("Notification: {Title} - {Message}", title, message);

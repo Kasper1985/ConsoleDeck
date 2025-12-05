@@ -10,7 +10,7 @@ namespace ConsoleDeckService.Core.Services.MacOS;
 [SupportedOSPlatform("macos")]
 public class MacOSNotificationProvider(ILogger<MacOSNotificationProvider> logger) : INotificationProvider
 {
-    public void ShowNotification(string title, string message, int duration = 3000)
+    public void ShowNotification(string title, string message, int duration = 1000)
     {
         logger.LogWarning("macOS notifications are not yet implemented");
         logger.LogInformation("Notification: {Title} - {Message}", title, message);
