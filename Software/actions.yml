@@ -1,26 +1,37 @@
-- Name: "Notepad"
-  Description: "Start default notepad application"
-  Type: "Command"
-  Payload: "notepad"
-  ImagePath: "button_images\\notepad.png"
-- Name: "Outlook"
-  Description: "Start modern Outlook application"
-  Type: "Command"
-  Payload: "olk"
-  ImagePath: "button_images\\outlook.png"
-- Name: "Calculator"
-  Description: "Start default calculator application"
-  Type: "Command"
-  Payload: "calc"
-  ImagePath: "button_images\\calculator.png"
-- Name: "GitHub"
-  Description: "Open GitHub website"
-  Type: "WebUrl"
-  Payload: "https://github.com"
-  ImagePath: "button_images\\github.png"
-- 
-- Name: "Bambu Studio"
-  Description: "Open Bambu Studio application"
-  Type: "Command"
-  Payload: "C:\\Program Files\\Bambu Studio\\bambu-studio.exe"
-  ImagePath: "button_images\\bambu_studio.png"
+- Name: MS Teams
+  Description: Start Microsoft Teams application
+  Type: Command
+  Payload: ms-teams
+  ImagePath: button_images\teams.png
+- Name: Outlook
+  Description: Start modern Outlook application
+  Type: Command
+  Payload: olk
+  ImagePath: button_images\outlook.png
+- Name: Calculator
+  Description: Start default calculator application
+  Type: Command
+  Payload: calc
+  ImagePath: button_images\calculator.png
+- Name: GitHub
+  Description: Open GitHub website
+  Type: WebUrl
+  Payload: https://github.com
+  ImagePath: button_images\github.png
+- Name: Bambu Studio
+  Description: Open Bambu Studio application
+  Type: Command
+  Payload: C:\Program Files\Bambu Studio\bambu-studio.exe
+  ImagePath: button_images\bambu_studio.png
+- Name: Notepad
+  Description: Start default notepad application
+  Type: Command
+  Payload: notepad
+  ImagePath: button_images\notepad.png
+- Name: Explorer
+  Description: ''
+  Type: Command
+  Payload: explorer
+  ImagePath: button_images\explorer.png
+-
+-
