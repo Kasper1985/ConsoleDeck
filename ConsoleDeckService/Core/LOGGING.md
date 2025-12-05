@@ -116,7 +116,7 @@ Error: No ConsoleDeck device detected (VendorId: 0xCAFE)
 
 **Device Disconnected:**
 ```
-Warning: ConsoleDeck device disconnected: RPi Pico
+Warning: ConsoleDeck device disconnected: RP2040 Zero
 ```
 **Resolution:**
 - Service automatically reconnects when device is plugged back in
@@ -322,4 +322,5 @@ Get-Process | Where-Object {$_.ProcessName -like "*ConsoleDeck*"}
 - Review `CROSS_PLATFORM.md` for platform-specific issues
 - Check GitHub issues for known problems
 - Enable verbose logging before reporting bugs
+
 
