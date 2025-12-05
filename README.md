@@ -153,7 +153,7 @@ dotnet run
 
 ## Getting Started
 
-1. **Build and flash the hardware firmware** to your Raspberry Pi Pico
+1. **Build and flash the hardware firmware** to your Raspberry Pi RP2040 Zero
 2. **Connect the ConsoleDeck** via USB
 3. **Start the ConsoleDeckService** or Windows Forms application
 4. **Configure your actions** via the settings window or configuration file
