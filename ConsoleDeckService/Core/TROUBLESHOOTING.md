@@ -6,20 +6,19 @@
 The `WindowsHidDeviceMonitor` now logs:
 - **ALL HID devices** found on the system with their VID/PID
 - **RAW HID data** in hexadecimal format for every report received
-- **Modifier keys** pressed (LCtrl, RCtrl, LShift, RShift, etc.)
-- **All key codes** received, not just F13-F21
-- **Report structure** detection (with or without Report ID byte)
-- **Warnings** when F13-F21 are pressed WITHOUT RCtrl+RShift
+- **All key codes** received (0xF1-0xF9 for ConsoleDeck buttons)
+- **Report structure** detection (3 bytes expected)
+- **Warnings** when key codes are outside the expected range
 
 ### 2. Updated Configuration
-- Set `vendorId` to `52478` (0xCAFE) to match your Raspberry Pi Zero device
+- Set `vendorId` to `51966` (0xCAFE) to match your Raspberry Pi Zero device
 - Enabled `verboseLogging` for detailed diagnostics
 
 ## How to Diagnose the Issue
 
 ### Step 1: Run the Service and Watch Logs
 
-```powershell
+```
 cd ConsoleDeckService
 dotnet run
 ```
@@ -27,7 +26,7 @@ dotnet run
 ### Step 2: Press a Media Key (Volume Up/Down)
 Watch the logs - you should see:
 ```
-[Debug] RAW HID Report (X bytes): 01 00 E9 00 00 00 00 00
+[Debug] RAW HID Report (8 bytes): 01 00 E9 00 00 00 00 00
 [Info] Modifiers pressed: ...
 [Info] Key pressed - Scan code: 0xE9 (233)
 ```
@@ -37,14 +36,12 @@ Watch the logs - you should see:
 - ? HID communication works
 - ? We're receiving reports
 
-### Step 3: Press a ConsoleDeck Button (RCtrl+RShift+F13)
+### Step 3: Press a ConsoleDeck Button
 Watch for:
 ```
-[Debug] RAW HID Report (X bytes): 30 00 68 00 00 00 00 00
-[Info] Modifiers pressed: RCtrl+RShift
-[Info] Key pressed - Scan code: 0x68 (104)
-[Info] ? FUNCTION KEY DETECTED: F13
-[Info] ?? KEY COMBINATION TRIGGERED: RCtrl+RShift+F13
+[Debug] RAW HID Report (3 bytes): 02 F1 FF
+[Info] Key pressed - Scan code: 0xF1 (241)
+[Info] Executing action: Open Notepad
 ```
 
 ## Common Issues and Solutions
@@ -81,7 +78,7 @@ If you see multiple devices with the same VID, you may need to specify the `prod
 ```json
 {
   "ConsoleDeck": {
-    "vendorId": YOUR_VID_DECIMAL,  // 0xCAFE = 52478
+    "vendorId": YOUR_VID_DECIMAL,  // 0xCAFE = 51966
     "productId": YOUR_PID_DECIMAL   // Optional but helps
   }
 }
@@ -91,81 +88,71 @@ If you see multiple devices with the same VID, you may need to specify the `prod
 
 **Symptoms:**
 - Media keys work (logs show scan codes like 0xE9)
-- F13-F21 don't work (different scan codes appear)
+- ConsoleDeck buttons don't work (different scan codes appear)
 
-**Your RPi Pico firmware might be sending:**
-- **Wrong scan codes** - Check logs to see what's actually sent
-- **Different modifiers** - Logs will show which modifiers are active
-- **Consumer Control reports** instead of Keyboard reports
-
-**Expected F13-F21 Scan Codes (HID Usage Table):**
-- F13 = 0x68 (104)
-- F14 = 0x69 (105)
-- F15 = 0x6A (106)
-- F16 = 0x6B (107)
-- F17 = 0x6C (108)
-- F18 = 0x6D (109)
-- F19 = 0x6E (110)
-- F20 = 0x6F (111)
-- F21 = 0x70 (112)
+**Expected Key Codes for ConsoleDeck Buttons:**
+- Button 1 = 0xF1 (241)
+- Button 2 = 0xF2 (242)
+- Button 3 = 0xF3 (243)
+- Button 4 = 0xF4 (244)
+- Button 5 = 0xF5 (245)
+- Button 6 = 0xF6 (246)
+- Button 7 = 0xF7 (247)
+- Button 8 = 0xF8 (248)
+- Button 9 = 0xF9 (249)
 
 **If your device sends different codes:**
 1. Note the actual scan codes from logs
 2. Update `ProcessHidReport` method to match your device's codes
 
-### Issue 4: Modifiers Not Detected
+### Issue 4: Unexpected HID Report Format
 
 **Symptoms:**
-- Logs show: "F13 pressed without RCtrl+RShift modifiers"
-- Modifiers byte is 0x00 or wrong value
+- RAW data shows different byte counts or patterns
 
-**Expected Modifiers Byte:**
+**Expected HID Report Format:**
 ```
-RCtrl + RShift = 0x30
-  Bit 4 (0x10) = Right Control
-  Bit 5 (0x20) = Right Shift
-  Together: 0x10 | 0x20 = 0x30
+3 bytes: [Report ID] [Key Code] [Press/Release]
+Example: 02 F1 FF (Report ID 2, Key 0xF1, Press)
 ```
 
-**Your firmware should send:**
-```
-Byte 0 (or 1 after Report ID): 0x30
-Byte 2+: Key scan code (0x68 for F13)
-```
+**If your device sends different format:**
+- Check firmware for correct HID descriptor
+- Report should be 3 bytes with Report ID = 2
 
 ### Issue 5: Report ID Confusion
 
 **Symptoms:**
 - RAW data shows strange patterns
-- First byte is always 0x01, 0x02, etc.
+- First byte is not 0x02
 
-**HID reports may include a Report ID:**
+**HID reports include a Report ID:**
 ```
-WITH Report ID:    01 30 00 68 00 00 00 00
-                   ^^ Report ID
+WITH Report ID:    02 F1 FF
+                   ^^ Report ID (expected: 2)
 
-WITHOUT Report ID: 30 00 68 00 00 00 00 00
-                   ^^ Modifiers directly
+WITHOUT Report ID: F1 FF 00
+                   ^^ Key code directly
 ```
 
-The code now auto-detects this!
+The code expects Report ID in byte 0!
 
 ## Testing with Temporary Workaround
 
-If F13-F21 aren't detected, you can temporarily test with regular keys:
+If buttons aren't detected, you can temporarily test with different codes:
 
-### Modify KeyCombination.cs (TEMPORARY TEST ONLY):
-```csharp
-// Add support for F1-F12 for testing
-if (keyCode >= 0x3A && keyCode <= 0x45)
+### Modify ProcessHidReport.cs (TEMPORARY TEST ONLY):
+```
+// Add support for different key codes for testing
+if (code >= 0xF1 && code <= 0xF9)
 {
-    int functionKeyNumber = (keyCode - 0x3A) + 1; // F1=1, F2=2, etc.
-    _logger.LogInformation("? FUNCTION KEY DETECTED: F{Number}", functionKeyNumber);
+    int buttonNumber = (code - 0xF0); // 0xF1 = 1, etc.
+    _logger.LogInformation("? BUTTON DETECTED: {Number}", buttonNumber);
     // ... rest of code
 }
 ```
 
-Then test with F1-F12 which are standard keys.
+Then test with your device's actual codes.
 
 ## Firmware Debugging Checklist
 
@@ -174,19 +161,18 @@ If keys still aren't detected, your RPi Pico firmware might need changes:
 ### ? Check Firmware HID Descriptor
 Your device should report as:
 - **HID Keyboard** (Usage Page 0x01, Usage 0x06)
-- **Report size**: Minimum 8 bytes (1 modifier + 1 reserved + 6 keys)
+- **Report size**: 3 bytes (Report ID + Key + Press/Release)
 
 ### ? Verify Key Codes Sent
 Use a HID monitoring tool:
 - **Windows**: [HidMonitor](https://github.com/todbot/hidpico)
 - **Cross-platform**: `hidapi` test programs
 
-### ? Check Modifier Byte Format
-```c
-// RPi Pico firmware should set bit flags:
-uint8_t modifiers = 0;
-if (right_ctrl_pressed)  modifiers |= 0x10;
-if (right_shift_pressed) modifiers |= 0x20;
+### ? Check Report Format
+```
+// RPi Pico firmware should send:
+uint8_t report[3] = {2, key_code, 0xFF}; // Press
+uint8_t report[3] = {2, key_code, 0x00}; // Release
 ```
 
 ## Getting Help
@@ -194,7 +180,7 @@ if (right_shift_pressed) modifiers |= 0x20;
 When asking for help, provide:
 1. **Full log output** (especially "RAW HID Report" lines)
 2. **Device VID/PID** from Device Manager
-3. **What keys work** (media keys?) vs what doesn't (F13-F21?)
+3. **What keys work** (media keys?) vs what doesn't (ConsoleDeck buttons?)
 4. **RPi Pico firmware** you're using (link or code snippet)
 
 ## Next Steps

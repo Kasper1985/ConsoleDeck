@@ -42,7 +42,7 @@ Enable verbose HID and action logging:
 
 This logs:
 - HID raw data packets
-- Detailed key combination detection
+- Detailed key code detection (0xF1-0xF9)
 - Action execution steps
 - Configuration validation details
 
@@ -56,7 +56,7 @@ This logs:
 
 ### Runtime
 - HID device connection/disconnection events
-- Key combination detection (F13-F21 presses)
+- Key code detection (0xF1-0xF9 presses)
 - Action execution (success/failure)
 - Configuration hot-reload events
 - System tray menu interactions
@@ -107,7 +107,7 @@ To add file logging, update `appsettings.json`:
 
 **Device Not Found:**
 ```
-Error: No ConsoleDeck device detected (VendorId: 0x2E8A)
+Error: No ConsoleDeck device detected (VendorId: 0xCAFE)
 ```
 **Resolution:**
 - Check USB connection
@@ -172,8 +172,8 @@ Error: Failed to load configuration: Invalid JSON at line 15
 
 **Validation Errors:**
 ```
-Warning: Invalid function key number: F25. Must be F13-F21.
-Warning: Duplicate mapping found for F13
+Warning: Invalid key code: 0xFA. Must be 0xF1-0xF9.
+Warning: Duplicate mapping found for 0xF1
 ```
 **Resolution:**
 - Fix configuration according to error messages
@@ -199,7 +199,7 @@ Warning: Duplicate mapping found for F13
 Check logs for:
 ```
 Information: Connected to ConsoleDeck device: Raspberry Pi Pico
-Debug: Key combination detected: RCtrl+RShift+F13
+Debug: Key pressed - Scan code: 0xF1 (241)
 ```
 
 ### 3. Test Action Execution
@@ -222,8 +222,8 @@ Information: Configuration reloaded with 9 key mappings
 
 **Check:**
 1. Device connected: Look for "Connected to ConsoleDeck device" log
-2. Key detection: Look for "Key combination detected" logs
-3. Action mapping: Verify configuration has mapping for pressed key
+2. Key detection: Look for "Key pressed - Scan code" logs
+3. Action mapping: Verify configuration has mapping for pressed key code
 4. Action enabled: Check `"enabled": true` in action configuration
 
 **Debug:**

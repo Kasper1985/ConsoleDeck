@@ -23,7 +23,7 @@ sudo apt-get install libhidapi-dev libudev-dev
 sudo usermod -a -G input $USER
 
 # Device permissions (create udev rule)
-echo 'KERNEL=="hidraw*", ATTRS{idVendor}=="2e8a", MODE="0666"' | \
+echo 'KERNEL=="hidraw*", ATTRS{idVendor}=="cafe", MODE="0666"' | \
   sudo tee /etc/udev/rules.d/99-consoledeck.rules
 sudo udevadm control --reload-rules
 ```
@@ -87,7 +87,7 @@ To add a new platform:
    }
    ```
 3. **Test HID communication** with your ConsoleDeck device
-4. **Verify** key combinations are detected correctly
+4. **Verify** key codes are detected correctly (0xF1-0xF9)
 5. **Update** this README with implementation details
 
 ## Testing
@@ -95,7 +95,7 @@ To add a new platform:
 ### Manual Testing
 1. Connect ConsoleDeck device via USB
 2. Run the service
-3. Press RCtrl+RShift+F13 through F21
+3. Press ConsoleDeck buttons (9 buttons total)
 4. Verify actions execute correctly
 
 ### HID Raw Data Testing
@@ -130,6 +130,6 @@ When implementing platform support:
 - **libusb**: Linux USB library
 
 ### ConsoleDeck Hardware
-- **Device**: Raspberry Pi Pico (VID: 0x2E8A)
+- **Device**: Raspberry Pi Pico (VID: 0xCAFE)
 - **Interface**: USB HID Keyboard
-- **Keys**: F13-F21 with RCtrl+RShift modifiers
+- **Keys**: 9 buttons sending key codes 0xF1-0xF9

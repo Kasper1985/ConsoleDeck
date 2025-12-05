@@ -1,169 +1,107 @@
 # ConsoleDeck Configuration Guide
 
-## Overview
+## Basic Configuration Structure
 
-ConsoleDeck is configured via the `appsettings.json` file. The configuration supports hot-reload, so changes take effect immediately without restarting the service.
-
-## Configuration Structure
+The `appsettings.json` file contains the ConsoleDeck configuration under the `"ConsoleDeck"` section:
 
 ```json
 {
   "ConsoleDeck": {
-    "vendorId": 51966,              // USB Vendor ID (0xCAFE = 51966 for RPi Zero)
-    "productId": null,              // Optional: USB Product ID filter
-    "debounceMs": 200,              // Debounce time in milliseconds
-    "verboseLogging": false,        // Enable detailed logging for debugging
-    "autoStart": false,             // Start with Windows (not yet implemented)
-    "showNotifications": true,      // Show toast notifications when actions execute
-    "keyMappings": [ ... ]          // Array of key-to-action mappings
+    "vendorId": 51966,
+    "productId": null,
+    "debounceMs": 200,
+    "verboseLogging": true,
+    "autoStart": false,
+    "showNotifications": false,
+    "keyMappings": [
+      {
+        "keyCode": 241,
+        "action": {
+          "name": "Open Notepad",
+          "description": "Opens Windows Notepad for quick notes",
+          "type": "LaunchApplication",
+          "target": "notepad.exe",
+          "arguments": null,
+          "workingDirectory": null,
+          "enabled": true
+        }
+      }
+    ]
   }
 }
 ```
 
-## Key Mappings
+## Key Code Mapping
 
-Each ConsoleDeck button (F13-F21) can be mapped to an action:
+ConsoleDeck buttons send key codes 0xF1 through 0xF9 (241-249 decimal):
 
-```json
-{
-  "functionKeyNumber": 13,          // F13 through F21 (13-21)
-  "action": {
-    "name": "Action Name",          // Display name for the action
-    "description": "Description",   // Optional description
-    "type": "ActionType",           // See Action Types below
-    "target": "target",             // The action target (path, URL, etc.)
-    "arguments": "args",            // Optional arguments
-    "workingDirectory": "path",     // Optional working directory
-    "enabled": true                 // Enable/disable this action
-  }
-}
-```
+- **Button 1**: 0xF1 (241)
+- **Button 2**: 0xF2 (242)
+- **Button 3**: 0xF3 (243)
+- **Button 4**: 0xF4 (244)
+- **Button 5**: 0xF5 (245)
+- **Button 6**: 0xF6 (246)
+- **Button 7**: 0xF7 (247)
+- **Button 8**: 0xF8 (248)
+- **Button 9**: 0xF9 (249)
 
 ## Action Types
 
-### 1. LaunchApplication
+### LaunchApplication
+Launches an executable or opens a file:
 
-Launches an application or executable.
-
-**Example - System Command:**
 ```json
 {
-  "type": "LaunchApplication",
-  "target": "notepad.exe",
-  "arguments": null,
-  "workingDirectory": null
+  "keyCode": 241,
+  "action": {
+    "name": "Open VS Code",
+    "type": "LaunchApplication",
+    "target": "code",
+    "arguments": ".",
+    "workingDirectory": "C:\\Projects\\MyProject",
+    "enabled": true
+  }
 }
 ```
 
-**Example - Full Path:**
+### OpenUrl
+Opens a URL in the default browser:
+
 ```json
 {
-  "type": "LaunchApplication",
-  "target": "C:\\Program Files\\MyApp\\app.exe",
-  "arguments": "--debug",
-  "workingDirectory": "C:\\Projects\\MyProject"
+  "keyCode": 242,
+  "action": {
+    "name": "Open GitHub",
+    "type": "OpenUrl",
+    "target": "https://github.com/myorg/myproject",
+    "enabled": true
+  }
 }
 ```
 
-**Common Applications:**
-- `notepad.exe` - Notepad
-- `calc.exe` - Calculator
-- `explorer.exe` - File Explorer
-- `wt.exe` - Windows Terminal
-- `code` - Visual Studio Code (if in PATH)
-
-### 2. OpenUrl
-
-Opens a URL in the default web browser.
-
-**Example:**
-```json
-{
-  "type": "OpenUrl",
-  "target": "https://github.com",
-  "arguments": null,
-  "workingDirectory": null
-}
-```
-
-**Use Cases:**
-- Open frequently used websites
-- Launch web-based dashboards
-- Open project documentation
-- Access CI/CD pipelines
-
-### 3. ExecuteScript
-
-Executes a script file (PowerShell, Batch, Python, etc.).
-
-**PowerShell Example:**
-```json
-{
-  "type": "ExecuteScript",
-  "target": "C:\\Scripts\\build.ps1",
-  "arguments": "-Configuration Release",
-  "workingDirectory": "C:\\Projects\\MyProject"
-}
-```
-
-**Batch File Example:**
-```json
-{
-  "type": "ExecuteScript",
-  "target": "C:\\Scripts\\backup.bat",
-  "arguments": null,
-  "workingDirectory": "C:\\Backups"
-}
-```
-
-**Python Example:**
-```json
-{
-  "type": "ExecuteScript",
-  "target": "C:\\Scripts\\deploy.py",
-  "arguments": "--environment prod",
-  "workingDirectory": "C:\\Scripts"
-}
-```
-
-**Supported Script Types:**
-- **Windows**: `.ps1`, `.bat`, `.cmd`, `.py`
-- **Linux**: `.sh`, `.py`
-- **macOS**: `.sh`, `.py`
-
-### 4. SendKeystrokes (Not Yet Implemented)
-
-Will send a sequence of keystrokes to the active window.
+### ExecuteScript
+Runs a script or command:
 
 ```json
 {
-  "type": "SendKeystrokes",
-  "target": "{CTRL}C",
-  "arguments": null,
-  "workingDirectory": null
-}
-```
-
-### 5. None
-
-Disables the button (no action).
-
-```json
-{
-  "type": "None",
-  "target": "",
-  "enabled": false
+  "keyCode": 243,
+  "action": {
+    "name": "Build Project",
+    "type": "ExecuteScript",
+    "target": "C:\\Projects\\build.ps1",
+    "enabled": true
+  }
 }
 ```
 
 ## Example Configurations
 
-### Developer Workflow
+### Development Workflow
 ```json
 {
   "keyMappings": [
     {
-      "functionKeyNumber": 13,
+      "keyCode": 241,
       "action": {
         "name": "Open VS Code",
         "type": "LaunchApplication",
@@ -174,7 +112,7 @@ Disables the button (no action).
       }
     },
     {
-      "functionKeyNumber": 14,
+      "keyCode": 242,
       "action": {
         "name": "Build Project",
         "type": "ExecuteScript",
@@ -183,7 +121,7 @@ Disables the button (no action).
       }
     },
     {
-      "functionKeyNumber": 15,
+      "keyCode": 243,
       "action": {
         "name": "Run Tests",
         "type": "ExecuteScript",
@@ -192,7 +130,7 @@ Disables the button (no action).
       }
     },
     {
-      "functionKeyNumber": 16,
+      "keyCode": 244,
       "action": {
         "name": "Open GitHub",
         "type": "OpenUrl",
@@ -209,7 +147,7 @@ Disables the button (no action).
 {
   "keyMappings": [
     {
-      "functionKeyNumber": 13,
+      "keyCode": 241,
       "action": {
         "name": "Launch OBS Studio",
         "type": "LaunchApplication",
@@ -218,7 +156,7 @@ Disables the button (no action).
       }
     },
     {
-      "functionKeyNumber": 14,
+      "keyCode": 242,
       "action": {
         "name": "Open Spotify",
         "type": "OpenUrl",
@@ -235,7 +173,7 @@ Disables the button (no action).
 {
   "keyMappings": [
     {
-      "functionKeyNumber": 13,
+      "keyCode": 241,
       "action": {
         "name": "Task Manager",
         "type": "LaunchApplication",
@@ -244,7 +182,7 @@ Disables the button (no action).
       }
     },
     {
-      "functionKeyNumber": 14,
+      "keyCode": 242,
       "action": {
         "name": "System Monitoring",
         "type": "LaunchApplication",
