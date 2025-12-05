@@ -198,7 +198,7 @@ Warning: Duplicate mapping found for 0xF1
 ### 2. Test HID Communication
 Check logs for:
 ```
-Information: Connected to ConsoleDeck device: Raspberry Pi Pico
+Information: Connected to ConsoleDeck device: Raspberry Pi PR2040 Zero
 Debug: Key pressed - Scan code: 0xF1 (241)
 ```
 
@@ -322,3 +322,4 @@ Get-Process | Where-Object {$_.ProcessName -like "*ConsoleDeck*"}
 - Review `CROSS_PLATFORM.md` for platform-specific issues
 - Check GitHub issues for known problems
 - Enable verbose logging before reporting bugs
+
