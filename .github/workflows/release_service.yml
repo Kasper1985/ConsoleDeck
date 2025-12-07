@@ -3,7 +3,7 @@ name: Release ConsoleDeck Service
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*.*.*'
 
 env:
   WORK_DIR: ./ConsoleDeckService
