@@ -1,0 +1,41 @@
+name: Release ConsoleDeck Service
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  WORK_DIR: ./ConsoleDeckService
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        working-directory: ${{ env.WORK_DIR }}
+        run: dotnet restore
+
+      - name: Build and publish
+        working-directory: ${{ env.WORK_DIR }}
+        run: dotnet build --configuration Release --no-restore --output ../publish
+
+      - name: Zip publish folder
+        run: Compress-Archive -Path ./publish/* -DestinationPath consoledeck_service_${{ github.ref_name }}.zip
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: consoledeck_service_${{ github.ref_name }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
