@@ -48,16 +48,19 @@ if (OperatingSystem.IsWindows())
 {
     builder.Services.AddSingleton<IHidDeviceMonitor, WindowsHidDeviceMonitor>();
     builder.Services.AddSingleton<INotificationProvider, WindowsNotificationProvider>();
+    builder.Services.AddSingleton<IAutoStartService, WindowsAutoStartService>();
 }
 else if (OperatingSystem.IsLinux())
 {
     builder.Services.AddSingleton<IHidDeviceMonitor, LinuxHidDeviceMonitor>();
     builder.Services.AddSingleton<INotificationProvider, LinuxNotificationProvider>();
+    builder.Services.AddSingleton<IAutoStartService, LinuxAutoStartService>();
 }
 else if (OperatingSystem.IsMacOS())
 {
     builder.Services.AddSingleton<IHidDeviceMonitor, MacOSHidDeviceMonitor>();
     builder.Services.AddSingleton<INotificationProvider, MacOSNotificationProvider>();
+    builder.Services.AddSingleton<IAutoStartService, MacOSAutoStartService>();
 }
 else
 {

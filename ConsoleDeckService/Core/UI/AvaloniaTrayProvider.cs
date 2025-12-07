@@ -79,6 +79,8 @@ public class AvaloniaTrayProvider(ILogger<AvaloniaTrayProvider> logger, INotific
                 // Attach menu to tray icon
                 _trayIcon.Menu = _trayMenu;
 
+                _trayIcon.Clicked += (s, e) => SettingsRequested?.Invoke(this, EventArgs.Empty);
+
                 _isInitialized = true;
                 logger.LogInformation("System tray initialized successfully");
             }

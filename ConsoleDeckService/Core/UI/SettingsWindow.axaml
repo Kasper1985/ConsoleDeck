@@ -195,9 +195,7 @@
                                          Content="Enable verbose logging (for debugging)"/>
                                 
                                 <CheckBox IsChecked="{Binding AutoStart}"
-                                         Content="Start with Windows (requires reinstallation)"
-                                         IsEnabled="False"
-                                         Opacity="0.5"/>
+                                         Content="Start with Windows (requires reinstallation)"/>
                             </StackPanel>
                         </Border>
                     </StackPanel>

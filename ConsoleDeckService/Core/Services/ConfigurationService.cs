@@ -196,7 +196,6 @@ public class ConfigurationService(ILogger<ConfigurationService> logger, IConfigu
             ProductId = null,
             DebounceMs = 200,
             VerboseLogging = false,
-            AutoStart = false,
             ShowNotifications = true,
             KeyMappings =
             [

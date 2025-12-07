@@ -1,5 +1,6 @@
 using Avalonia.Threading;
 using ConsoleDeckService.Core.Interfaces;
+using ConsoleDeckService.Core.UI.ViewModels;
 
 namespace ConsoleDeckService.Core.UI;
 
@@ -7,7 +8,12 @@ namespace ConsoleDeckService.Core.UI;
 /// Avalonia-based settings window provider.
 /// Manages the lifecycle of the settings window.
 /// </summary>
-public class AvaloniaSettingsWindowProvider(IConfigurationService configService, ILogger<SettingsWindow> windowLogger, ILogger<AvaloniaSettingsWindowProvider> logger) : ISettingsWindowProvider
+public class AvaloniaSettingsWindowProvider(
+    IConfigurationService configService, 
+    IAutoStartService autoStartService,
+    ILogger<SettingsWindow> windowLogger, 
+    ILogger<SettingsViewModel> viewModelLogger,
+    ILogger<AvaloniaSettingsWindowProvider> logger) : ISettingsWindowProvider
 {
     private SettingsWindow? _settingsWindow;
 
@@ -27,7 +33,7 @@ public class AvaloniaSettingsWindowProvider(IConfigurationService configService,
 
                 // Create new settings window
                 logger.LogInformation("Opening settings window");
-                _settingsWindow = new SettingsWindow(configService, windowLogger);
+                _settingsWindow = new SettingsWindow(configService, autoStartService, windowLogger, viewModelLogger);
 
                 // Handle window closed event
                 _settingsWindow.Closed += (s, e) =>

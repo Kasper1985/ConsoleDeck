@@ -13,6 +13,7 @@ namespace ConsoleDeckService.Core.UI.ViewModels;
 public class SettingsViewModel : INotifyPropertyChanged
 {
     private readonly IConfigurationService _configService;
+    private readonly IAutoStartService _autoStartService;
     private readonly ILogger<SettingsViewModel> _logger;
     
     private int _vendorId;
@@ -25,9 +26,10 @@ public class SettingsViewModel : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public SettingsViewModel(IConfigurationService configService, ILogger<SettingsViewModel> logger)
+    public SettingsViewModel(IConfigurationService configService, IAutoStartService autoStartService, ILogger<SettingsViewModel> logger)
     {
         _configService = configService;
+        _autoStartService = autoStartService;
         _logger = logger;
         
         KeyMappings = [];
@@ -153,8 +155,10 @@ public class SettingsViewModel : INotifyPropertyChanged
             _productId = config.ProductId;
             _debounceMs = config.DebounceMs;
             _verboseLogging = config.VerboseLogging;
-            _autoStart = config.AutoStart;
             _showNotifications = config.ShowNotifications;
+
+            //_autoStart = config.AutoStart;
+            _autoStart = _autoStartService.IsAutoStartEnabledAsync().GetAwaiter().GetResult();
 
             KeyMappings.Clear();
             
@@ -220,8 +224,9 @@ public class SettingsViewModel : INotifyPropertyChanged
             config.ProductId = ProductId;
             config.DebounceMs = DebounceMs;
             config.VerboseLogging = VerboseLogging;
-            config.AutoStart = AutoStart;
             config.ShowNotifications = ShowNotifications;
+
+            //config.AutoStart = AutoStart;
 
             // Update key mappings
             config.KeyMappings.Clear();
@@ -253,6 +258,24 @@ public class SettingsViewModel : INotifyPropertyChanged
                     _logger.LogWarning("  - {Error}", error);
                 }
                 return false;
+            }
+
+            // Apply auto-start setting
+            if (AutoStart)
+            {
+                var enabled = await _autoStartService.EnableAutoStartAsync();
+                if (!enabled)
+                {
+                    _logger.LogWarning("Failed to enable auto-start");
+                }
+            }
+            else
+            {
+                var disabled = await _autoStartService.DisableAutoStartAsync();
+                if (!disabled)
+                {
+                    _logger.LogWarning("Failed to disable auto-start");
+                }
             }
 
             // Save to file

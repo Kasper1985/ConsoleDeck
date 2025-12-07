@@ -22,10 +22,10 @@ public partial class SettingsWindow : Window
         _logger = null!;
     }
 
-    public SettingsWindow(IConfigurationService configService, ILogger<SettingsWindow> logger)
+    public SettingsWindow(IConfigurationService configService, IAutoStartService autoStartService, ILogger<SettingsWindow> logger, ILogger<SettingsViewModel> viewModelLogger)
     {
         _logger = logger;
-        _viewModel = new SettingsViewModel(configService, Microsoft.Extensions.Logging.LoggerFactory.Create(builder => { }).CreateLogger<SettingsViewModel>());
+        _viewModel = new SettingsViewModel(configService, autoStartService, viewModelLogger);
         
         DataContext = _viewModel;
         

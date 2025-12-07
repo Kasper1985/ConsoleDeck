@@ -35,11 +35,6 @@ public class ConsoleDeckConfiguration
     public bool VerboseLogging { get; set; } = false;
 
     /// <summary>
-    /// Automatically start with Windows (Windows only).
-    /// </summary>
-    public bool AutoStart { get; set; } = false;
-
-    /// <summary>
     /// Show system tray notifications when actions are executed.
     /// </summary>
     public bool ShowNotifications { get; set; } = true;
