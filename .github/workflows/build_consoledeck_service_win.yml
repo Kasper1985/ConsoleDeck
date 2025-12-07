@@ -1,0 +1,30 @@
+name: .NET Core Desktop
+
+on:
+  push:
+    branches: "main"
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 10.0.x
+
+    - name: Restore .NET Packages
+      run: |
+        cd ConsoleDeckService
+        dotnet restore
+
+    - name: Run all unit tests
+      run: dotnet test --no-restore
+
+    - name: Build release
+      run: dotnet build -o Release --no-restore
