@@ -37,7 +37,7 @@ jobs:
   
       - name: Build release
         working-directory: ${{ env.MY_WORK_DIR }}
-        run: dotnet build --no-restore
+        run: dotnet build --configuration Release --no-restore
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v5
