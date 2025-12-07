@@ -1,4 +1,4 @@
-name: .NET Core Desktop
+name: Build ConsoleDeckService
 
 on:
   push:
@@ -24,7 +24,11 @@ jobs:
         dotnet restore
 
     - name: Run all unit tests
-      run: dotnet test --no-restore
+      run: |
+        cd ConsoleDeckService
+        dotnet test --no-restore
 
     - name: Build release
-      run: dotnet build -o Release --no-restore
+      run: |
+        cd ConsoleDeckService
+        dotnet build -o Release --no-restore
