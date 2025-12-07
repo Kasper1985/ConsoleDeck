@@ -18,7 +18,6 @@ public class AvaloniaTrayProvider(ILogger<AvaloniaTrayProvider> logger, INotific
 
     public event EventHandler? ExitRequested;
     public event EventHandler? SettingsRequested;
-    public event EventHandler? StatusRequested;
 
     public async Task InitializeAsync()
     {

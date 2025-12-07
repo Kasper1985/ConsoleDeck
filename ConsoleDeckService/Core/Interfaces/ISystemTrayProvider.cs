@@ -17,11 +17,6 @@ public interface ISystemTrayProvider
     event EventHandler? SettingsRequested;
 
     /// <summary>
-    /// Event raised when the user requests to view status/logs via the tray menu.
-    /// </summary>
-    event EventHandler? StatusRequested;
-
-    /// <summary>
     /// Initializes and shows the system tray icon.
     /// </summary>
     Task InitializeAsync();
