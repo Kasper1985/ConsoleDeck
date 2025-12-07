@@ -19,7 +19,6 @@ public class SettingsViewModel : INotifyPropertyChanged
     private int _vendorId;
     private int? _productId;
     private int _debounceMs;
-    private bool _verboseLogging;
     private bool _autoStart;
     private bool _showNotifications;
     private bool _hasUnsavedChanges;
@@ -76,20 +75,6 @@ public class SettingsViewModel : INotifyPropertyChanged
             if (_debounceMs != value)
             {
                 _debounceMs = value;
-                OnPropertyChanged();
-                HasUnsavedChanges = true;
-            }
-        }
-    }
-
-    public bool VerboseLogging
-    {
-        get => _verboseLogging;
-        set
-        {
-            if (_verboseLogging != value)
-            {
-                _verboseLogging = value;
                 OnPropertyChanged();
                 HasUnsavedChanges = true;
             }
@@ -154,7 +139,6 @@ public class SettingsViewModel : INotifyPropertyChanged
             _vendorId = config.VendorId ?? 0xCAFE;
             _productId = config.ProductId;
             _debounceMs = config.DebounceMs;
-            _verboseLogging = config.VerboseLogging;
             _showNotifications = config.ShowNotifications;
 
             //_autoStart = config.AutoStart;
@@ -199,7 +183,6 @@ public class SettingsViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(VendorId));
             OnPropertyChanged(nameof(ProductId));
             OnPropertyChanged(nameof(DebounceMs));
-            OnPropertyChanged(nameof(VerboseLogging));
             OnPropertyChanged(nameof(AutoStart));
             OnPropertyChanged(nameof(ShowNotifications));
             OnPropertyChanged(nameof(HasUnsavedChanges));
@@ -223,7 +206,6 @@ public class SettingsViewModel : INotifyPropertyChanged
             config.VendorId = VendorId;
             config.ProductId = ProductId;
             config.DebounceMs = DebounceMs;
-            config.VerboseLogging = VerboseLogging;
             config.ShowNotifications = ShowNotifications;
 
             //config.AutoStart = AutoStart;

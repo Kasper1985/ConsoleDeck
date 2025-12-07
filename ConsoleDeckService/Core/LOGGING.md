@@ -28,24 +28,6 @@ Configure log levels in `appsettings.json`:
 - `Error` - Errors that stopped an operation
 - `Critical` - Critical failures requiring immediate attention
 
-### Verbose Logging
-
-Enable verbose HID and action logging:
-
-```json
-{
-  "ConsoleDeck": {
-    "verboseLogging": true
-  }
-}
-```
-
-This logs:
-- HID raw data packets
-- Detailed key code detection (0xF1-0xF9)
-- Action execution steps
-- Configuration validation details
-
 ## What Gets Logged
 
 ### Startup
@@ -181,20 +163,6 @@ Warning: Duplicate mapping found for 0xF1
 
 ## Debugging Tips
 
-### 1. Enable Verbose Logging
-```json
-{
-  "Logging": {
-    "LogLevel": {
-      "ConsoleDeckService": "Trace"
-    }
-  },
-  "ConsoleDeck": {
-    "verboseLogging": true
-  }
-}
-```
-
 ### 2. Test HID Communication
 Check logs for:
 ```
@@ -225,13 +193,6 @@ Information: Configuration reloaded with 9 key mappings
 2. Key detection: Look for "Key pressed - Scan code" logs
 3. Action mapping: Verify configuration has mapping for pressed key code
 4. Action enabled: Check `"enabled": true` in action configuration
-
-**Debug:**
-```powershell
-# Run with verbose logging
-$env:ConsoleDeckService__VerboseLogging="true"
-dotnet run
-```
 
 ### Issue: Tray Icon Not Appearing
 
@@ -287,10 +248,9 @@ tail -f /var/log/consoledeck/log.txt
 
 ### Collecting Logs for Support
 
-1. Enable verbose logging
-2. Reproduce the issue
-3. Collect logs from startup to error
-4. Include configuration (remove sensitive data)
+1. Reproduce the issue
+2. Collect logs from startup to error
+3. Include configuration (remove sensitive data)
 
 ### Log Format
 
@@ -321,6 +281,6 @@ Get-Process | Where-Object {$_.ProcessName -like "*ConsoleDeck*"}
 - Review `CONFIGURATION.md` for configuration issues
 - Review `CROSS_PLATFORM.md` for platform-specific issues
 - Check GitHub issues for known problems
-- Enable verbose logging before reporting bugs
+
 
 

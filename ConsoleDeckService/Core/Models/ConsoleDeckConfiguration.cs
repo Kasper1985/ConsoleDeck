@@ -30,11 +30,6 @@ public class ConsoleDeckConfiguration
     public int DebounceMs { get; set; } = 200;
 
     /// <summary>
-    /// Enable verbose logging for debugging.
-    /// </summary>
-    public bool VerboseLogging { get; set; } = false;
-
-    /// <summary>
     /// Show system tray notifications when actions are executed.
     /// </summary>
     public bool ShowNotifications { get; set; } = true;

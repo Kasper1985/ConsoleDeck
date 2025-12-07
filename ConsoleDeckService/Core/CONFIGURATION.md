@@ -10,8 +10,6 @@ The `appsettings.json` file contains the ConsoleDeck configuration under the `"C
     "vendorId": 51966,
     "productId": null,
     "debounceMs": 200,
-    "verboseLogging": true,
-    "autoStart": false,
     "showNotifications": false,
     "keyMappings": [
       {
@@ -248,15 +246,6 @@ Logs are written to:
 - Console output (when running from terminal)
 - Windows Event Viewer (when running as service)
 - Check Worker service logs for detailed diagnostics
-
-Enable verbose logging:
-```json
-{
-  "ConsoleDeck": {
-    "verboseLogging": true
-  }
-}
-```
 
 ## Further Customization
 

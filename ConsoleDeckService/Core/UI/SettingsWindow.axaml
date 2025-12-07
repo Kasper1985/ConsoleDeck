@@ -191,9 +191,6 @@
                                 <CheckBox IsChecked="{Binding ShowNotifications}"
                                          Content="Show notifications when actions execute"/>
                                 
-                                <CheckBox IsChecked="{Binding VerboseLogging}"
-                                         Content="Enable verbose logging (for debugging)"/>
-                                
                                 <CheckBox IsChecked="{Binding AutoStart}"
                                          Content="Start with Windows (requires reinstallation)"/>
                             </StackPanel>

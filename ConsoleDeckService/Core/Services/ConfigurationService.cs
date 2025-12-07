@@ -195,7 +195,6 @@ public class ConfigurationService(ILogger<ConfigurationService> logger, IConfigu
             VendorId = 0xCAFE, // ConsoleDeck Vendor ID
             ProductId = null,
             DebounceMs = 200,
-            VerboseLogging = false,
             ShowNotifications = true,
             KeyMappings =
             [
