@@ -4,6 +4,9 @@ on:
   push:
     branches: "main"
 
+env:
+  MY_WORK_DIR: ./ConsoleDeckService
+
 jobs:
   build:
     runs-on: windows-latest
@@ -25,24 +28,21 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Restore .NET Packages
-        run: |
-          cd ConsoleDeckService
-          dotnet restore
+        working-directory: ${{ env.MY_WORK_DIR }}
+        run: dotnet restore
   
       - name: Run all unit tests
-        run: |
-          cd ConsoleDeckService
-          dotnet test --no-restore
+        working-directory: ${{ env.MY_WORK_DIR }}
+        run: dotnet test --no-restore
   
       - name: Build release
-        run: |
-          cd ConsoleDeckService
-          dotnet build -o Release --no-restore
+        working-directory: ${{ env.MY_WORK_DIR }}
+        run: dotnet build --no-restore
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v5.0.0
+        uses: actions/upload-artifact@v5
         with:
           name: console_deck_service
-          path: ./ConsoleDeckService/bin/Release/net10.0/
+          path: ${{ env.MY_WORK_DIR }}/bin/Release/net10.0/
           compression-level: 6
           overwrite: true
