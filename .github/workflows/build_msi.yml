@@ -28,7 +28,7 @@ jobs:
 
       - name: Build MSI via WiX
         run: |
-          candle.exe consoledeck_service.wxs -out consoledeck_service.wixobj
+          candle.exe consoledeck_service.wxs -ext WixUIExtension -out consoledeck_service.wixobj
           light.exe consoledeck_service.wixobj -o ConsoleDeckService.msi
 
       - name: Upload MSI Artifact
