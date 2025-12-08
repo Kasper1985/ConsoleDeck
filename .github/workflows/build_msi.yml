@@ -14,8 +14,8 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v5
         with:
-          run-id: 20031331269
-          artifact-ids: 4798319522
+          run-id: 20031649847
+          artifact-ids: 4798445569
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install WiX Toolset
