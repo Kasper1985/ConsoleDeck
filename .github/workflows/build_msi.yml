@@ -1,0 +1,46 @@
+name: Build the MSI Package
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: console_deck_service
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Unzip artifact
+        run: |
+          cd
+          Expand-Archive -Path . -DestinationPath ./package
+
+      - name: Setup java for package build
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'adopt'
+          java-version: 17
+          cache: 'sbt'
+
+      - name: Build MSI package
+        run: sbt './package'
+
+      - name: Check results
+        run: |
+          cd
+          cd ./publish
+
+      - name: Upload MSI Artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: consoledeck_service.msi
+          path: ./publish/package.msi
+        
+        
