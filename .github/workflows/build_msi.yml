@@ -28,7 +28,7 @@ jobs:
       - name: Fix components.wxs for inclusion
         run: |
           $content = Get-Content components.wxs -Raw
-          $content = $content -replace '<\?xml.*?\?>', '' -replace '<Wix.*?>', '' -replace '</Wix>', ''
+          $content = $content -replace '<\?xml.*?\?>', '' -replace '<Wix.*?>', '<Include>' -replace '</Wix>', '</Include>'
           $content | Set-Content components.wxs
 
       - name: Build MSI via WiX
