@@ -18,6 +18,9 @@ jobs:
           artifact-ids: 4797587316
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: List files from artifact
+        run: ls
+
       - name: Install WiX Toolset
         run: choco install wixtoolset -y
       
