@@ -14,19 +14,17 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v5
         with:
-          run-id: 20011077629
-          artifact-ids: 4791691693
+          run-id: 20029413130
+          artifact-ids: 4797587316
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup java for package build
-        uses: actions/setup-java@v5
-        with:
-          distribution: 'adopt'
-          java-version: 17
-          cache: 'sbt'
+      - name: Install go-msi
+        run: choco install -y "go-msi"
 
-      - name: Build MSI package
-        run: sbt '.'
+      - name: Build Windows Installer MSI from exe file
+        uses: AliceOh/CreateWindowsInstaller@1.0.0
+        with:
+          exefile: 'helloworld.exe'
 
       - name: Check results
         run: |
