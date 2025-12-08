@@ -25,15 +25,9 @@ jobs:
         run: |
           heat.exe dir . -cg ProductComponents -dr INSTALLFOLDER -out components.wxs -scom -sreg -sfrag -srd -gg
 
-      - name: Fix components.wxs for inclusion
-        run: |
-          $content = Get-Content components.wxs -Raw
-          $content = $content -replace '<\?xml.*?\?>', '' -replace '<Wix.*?>', '<Include>' -replace '</Wix>', '</Include>'
-          $content | Set-Content components.wxs
-
       - name: Build MSI via WiX
         run: |
-          candle.exe consoledeck_service.wxs -out consoledeck_service.wixobj
+          candle.exe components.wxs -out consoledeck_service.wixobj
           light.exe consoledeck_service.wixobj -o ConsoleDeckService.msi
 
       - name: Upload MSI Artifact
