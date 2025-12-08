@@ -18,11 +18,6 @@ jobs:
           artifact-ids: 4791691693
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Unzip artifact
-        run: |
-          ls
-          Expand-Archive -Path . -DestinationPath ./package
-
       - name: Setup java for package build
         uses: actions/setup-java@v5
         with:
@@ -31,17 +26,16 @@ jobs:
           cache: 'sbt'
 
       - name: Build MSI package
-        run: sbt './package'
+        run: sbt '.'
 
       - name: Check results
         run: |
-          cd
-          cd ./publish
+          ls
 
       - name: Upload MSI Artifact
         uses: actions/upload-artifact@v5
         with:
           name: consoledeck_service.msi
-          path: ./publish/package.msi
+          path: package.msi
         
         
