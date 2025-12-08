@@ -20,7 +20,7 @@ jobs:
 
       - name: Unzip artifact
         run: |
-          cd
+          ls
           Expand-Archive -Path . -DestinationPath ./package
 
       - name: Setup java for package build
