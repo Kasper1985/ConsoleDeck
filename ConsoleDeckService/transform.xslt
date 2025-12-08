@@ -2,10 +2,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:wix="http://schemas.microsoft.com/wix/2006/wi">
   <xsl:output method="xml" indent="yes" />
   <xsl:template match="wix:Wix">
-    <Include>
-      <xsl:apply-templates select="@*" />
-      <xsl:apply-templates />
-    </Include>
+    <xsl:apply-templates />
   </xsl:template>
   <xsl:template match="@*|node()">
     <xsl:copy>
