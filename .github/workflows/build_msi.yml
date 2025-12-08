@@ -23,7 +23,7 @@ jobs:
       
       - name: Harvest files with Heat
         run: |
-          heat.exe dir . -cg ProductComponents -dr INSTALLFOLDER -out components.wxs -scom -sreg -sfrag -srd -gg
+          heat.exe dir . -cg ProductComponents -dr INSTALLFOLDER -out components.wxs -scom -sreg -sfrag -srd -gg -t transform.xslt
           Get-Content components.wxs
 
       - name: Build MSI via WiX
