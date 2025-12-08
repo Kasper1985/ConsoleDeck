@@ -23,7 +23,13 @@ jobs:
       
       - name: Harvest files with Heat
         run: |
-          heat.exe dir . -cg ProductComponents -dr INSTALLFOLDER -out components.wxs -scom -sreg -sfrag -srd -t transform.xslt -gg
+          heat.exe dir . -cg ProductComponents -dr INSTALLFOLDER -out components.wxs -scom -sreg -sfrag -srd -gg
+
+      - name: Fix components.wxs for inclusion
+        run: |
+          $content = Get-Content components.wxs -Raw
+          $content = $content -replace '<\?xml.*?\?>', '' -replace '<Wix.*?>', '' -replace '</Wix>', ''
+          $content | Set-Content components.wxs
 
       - name: Build MSI via WiX
         run: |
