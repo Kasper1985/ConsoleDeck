@@ -18,16 +18,12 @@ jobs:
           artifact-ids: 4798319522
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: List files from artifact
-        run: ls
-
       - name: Install WiX Toolset
         run: choco install wixtoolset -y
       
       - name: Harvest files with Heat
         run: |
-          heat.exe dir . -cg ProductComponents -dr INSTALLFOLDER -out components.wxs -scom -sreg -sfrag -srd -t transform.xslt
-          ls
+          heat.exe dir . -cg ProductComponents -dr INSTALLFOLDER -out components.wxs -scom -sreg -sfrag -srd -t transform.xslt -gg
 
       - name: Build MSI via WiX
         run: |
