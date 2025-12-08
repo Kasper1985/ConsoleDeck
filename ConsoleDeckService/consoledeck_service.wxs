@@ -39,7 +39,9 @@
         <Directory Id="INSTALLFOLDER" Name="ConsoleDeckService" />
       </Directory>
       <Directory Id="ProgramMenuFolder">
-        <Directory Id="ApplicationProgramsFolder" Name="ConsoleDeckService" />
+        <Directory Id="ApplicationProgramsFolder" Name="ConsoleDeckService">
+            <RemoveFile Id="RemoveApplicationProgramsFolder" Name="*" On="uninstall" />
+        </Directory>
       </Directory>
     </Directory>
   </Fragment>
