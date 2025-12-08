@@ -18,22 +18,22 @@ jobs:
           artifact-ids: 4797587316
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install go-msi
-        run: choco install -y "go-msi"
-
-      - name: Build Windows Installer MSI from exe file
-        uses: AliceOh/CreateWindowsInstaller@1.0.0
-        with:
-          exefile: 'helloworld.exe'
-
-      - name: Check results
+      - name: Install WiX Toolset
+        run: choco install wixtoolset -y
+      
+      - name: Harvest files with Heat
         run: |
-          ls
+          heat.exe dir . -cg ProductComponents -dr INSTALLFOLDER -out components.wxs -scom -sreg -sfrag -srd
+
+      - name: Build MSI via WiX
+        run: |
+          candle.exe consoledeck_service.wxs -out consoledeck_service.wixobj
+          light.exe consoledeck_service.wixobj -o ConsoleDeckService.msi
 
       - name: Upload MSI Artifact
         uses: actions/upload-artifact@v5
         with:
           name: consoledeck_service.msi
-          path: package.msi
+          path: ConsoleDeckService.msi
         
         
