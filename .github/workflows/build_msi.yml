@@ -23,12 +23,12 @@ jobs:
       
       - name: Harvest files with Heat
         run: |
-          heat.exe dir . -cg ProductComponents -dr INSTALLFOLDER -out components.wxs -scom -sreg -sfrag -srd -gg -t transform.xslt
-          Get-Content components.wxs
+          heat.exe dir . -cg ProductComponents -dr INSTALLFOLDER -out components.wxs -scom -sreg -sfrag -srd -gg
+          Get-Content components.wxs        
 
       - name: Build MSI via WiX
         run: |
-          candle.exe components.wxs -out consoledeck_service.wixobj
+          candle.exe consoledeck_service.wxs -out consoledeck_service.wixobj
           light.exe consoledeck_service.wixobj -o ConsoleDeckService.msi
 
       - name: Upload MSI Artifact
