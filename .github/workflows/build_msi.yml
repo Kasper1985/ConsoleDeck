@@ -33,7 +33,7 @@ jobs:
           aip-path: ./ConsoleDeck_Service.aip
 
       - name: List files
-        run: ls './ConsoleDeck Service-SetupFiles"
+        run: ls './ConsoleDeck Service-SetupFiles'
 
       #- name: Install WiX Toolset
       #  run: choco install wixtoolset -y
