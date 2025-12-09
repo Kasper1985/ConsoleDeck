@@ -77,6 +77,7 @@ jobs:
           advinst-version: '23.3'
           advinst-enable-automation: true
           aip-path: ${{ env.WORK_DIR }}/ConsoleDeck_Service.aip
+          aip-build-name: DefaultBuild
           aip-commands:
             SetVersion ${{ env.RELEASE_VERSION }}
             SetPackageName ConsoleDeckService_${{ env.RELEASE_VERSION }}.msi
