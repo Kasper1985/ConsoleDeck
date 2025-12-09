@@ -12,7 +12,7 @@
     <ROW Property="Manufacturer" Value="Kasper Inc."/>
     <ROW Property="ProductCode" Value="1033:{E7B21E2D-6C0B-4A3C-BEB0-2BC48C4F83F2} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
-    <ROW Property="ProductName" Value="ConsoleDeck Service"/>
+    <ROW Property="ProductName" Value="ConsoleDeck_Service"/>
     <ROW Property="ProductVersion" Value="0.9.0" Options="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{044425DF-FECA-4048-8B10-C523E85AE238}"/>
