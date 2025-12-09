@@ -28,8 +28,6 @@ jobs:
           advinst-version: '23.3'
           advinst-enable-automation: true
           aip-path: ./release/ConsoleDeck_Service.aip
-          aip-build-name: DefaultBuild
-          aip-output-dir: .
 
       - name: List files
         run: ls
