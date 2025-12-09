@@ -11,25 +11,40 @@ jobs:
       contents: write
 
     steps:
+      - name: Create release directory
+        run: mkdir release
+        
       - name: Download artifact
         uses: actions/download-artifact@v5
         with:
-          run-id: 20036122738
-          artifact-ids: 4800309529
+          run-id: 20069286654
+          artifact-ids: 4812777888
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./release
 
-      - name: Install WiX Toolset
-        run: choco install wixtoolset -y
+      - name: MSI via Advanced Installer
+        uses: caphyon/advinst-github-action@main
+        with:
+          advinst-version: '23.3'
+          advinst-enable-automation: true
+          aip-path: ./release/ConsoleDeck_Service.aip
+          api-output-dir: .
+
+      - name: List files
+        run: ls
+
+      #- name: Install WiX Toolset
+      #  run: choco install wixtoolset -y
       
-      - name: Harvest files with Heat
-        run: |
-          heat.exe dir . -cg ProductComponents -dr INSTALLFOLDER -out components.wxs -scom -sreg -sfrag -srd -gg
-          Get-Content components.wxs        
+      #- name: Harvest files with Heat
+      #  run: |
+      #    heat.exe dir . -cg ProductComponents -dr INSTALLFOLDER -out components.wxs -scom -sreg -sfrag -srd -gg
+      #    Get-Content components.wxs        
 
-      - name: Build MSI via WiX
-        run: |
-          candle.exe consoledeck_service.wxs -out consoledeck_service.wixobj
-          light.exe consoledeck_service.wixobj -ext WixUIExtension -o ConsoleDeckService.msi
+      #- name: Build MSI via WiX
+      #  run: |
+      #    candle.exe consoledeck_service.wxs -out consoledeck_service.wixobj
+      #    light.exe consoledeck_service.wixobj -ext WixUIExtension -o ConsoleDeckService.msi
 
       - name: Upload MSI Artifact
         uses: actions/upload-artifact@v5
