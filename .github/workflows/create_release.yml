@@ -77,9 +77,9 @@ jobs:
           advinst-version: '23.3'
           advinst-enable-automation: true
           aip-path: ${{ env.WORK_DIR }}/ConsoleDeck_Service.aip
-          aip-commands:
-            SetVersion '${{ env.RELEASE_VERSION }}'
-            SetPackageName 'ConsoleDeckService_${{ env.RELEASE_VERSION }}.msi'
+          aip-commands: |
+            SetVersion ${{ env.RELEASE_VERSION }}
+            SetPackageName ConsoleDeckService_${{ env.RELEASE_VERSION }}.msi
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
