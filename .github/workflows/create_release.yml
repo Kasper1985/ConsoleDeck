@@ -48,7 +48,7 @@ jobs:
             SetPackageName ConsoleDeckService_${{ github.ref_name }}.msi
 
       - name: Create GitHub Release
-        uses: softprops/actions-gh-release@v2
+        uses: softprops/action-gh-release@v2
         with:
           files: ${{ env.WORK_DIR }}/ConsoleDeckService_${{ github.ref_name }}.msi
         env:
