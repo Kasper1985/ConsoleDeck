@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Setup .NET 10
         uses: actions/setup-dotnet@v5
@@ -37,6 +39,38 @@ jobs:
         working-directory: ${{ env.WORK_DIR }}
         run: dotnet publish -c Release -o release --no-restore .\ConsoleDeckService.csproj
 
+      # If action was triggered my a tag, set RELEASE_VERSION to the triggering tag
+      - name: Set RELEASE_VERSION from triggering tag
+        if: ${{ github.ref_type == 'tag' }}
+        run: |
+          $version = '${{ github.ref_name }}'
+          if (-not $version) {
+            Write-Error "github.ref_name is empty despite ref_type == 'tag'"
+          }
+          "RELEASE_VERSION=$version" >> $env:GITHUB_ENV
+          Write-Host "RELEASE_VERSION set to $version (from triggering tag)"
+
+      # If action was not triggered by a tag, compute latest tag of type v*.*.* of fail if none
+      - name: Get latest v*.*.* tag
+        if: ${{ github.ref_type != 'tag' }}
+        run: |
+          git fetch --tags --force
+          $tags = git tag --list 'v*.*.*'
+          if (-not $tags) {
+            Write-Error "No tags found matching pattern v*.*.*"
+          }
+          $latestTag = $tags | 
+            Sort-Object {
+              $ver = $_ -replace '^v',''
+              try { [version]$ver } catch { [version]'0.0.0' }
+            } -Descending |
+            Select-Object -First 1
+            if (-not $latestTag) {
+              Write-Error "Failed to determine latest tag from v*.*.*"
+            }
+          "RELEASE_VERSION=$latestTag" >> $env:GITHUB_ENV
+          Write-Host "RELEASE_VERSION set to $latestTag (computed latest)"
+
       - name: Create MSI package via Advanced Installer
         uses: caphyon/advinst-github-action@main
         with:
@@ -44,13 +78,13 @@ jobs:
           advinst-enable-automation: true
           aip-path: ${{ env.WORK_DIR }}/ConsoleDeck_Service.aip
           aip-commands:
-            SetVersion ${{ github.ref_name }}
-            SetPackageName ConsoleDeckService_${{ github.ref_name }}.msi
+            SetVersion ${{ env.RELEASE_VERSION }}
+            SetPackageName ConsoleDeckService_${{ env.RELEASE_VERSION }}.msi
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ env.WORK_DIR }}/ConsoleDeckService_${{ github.ref_name }}.msi
+          files: ${{ env.WORK_DIR }}/ConsoleDeckService_${{ env.RELEASE_VERSION }}.msi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
