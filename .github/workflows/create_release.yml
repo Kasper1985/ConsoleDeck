@@ -74,7 +74,7 @@ jobs:
       - name: Create MSI package via Advanced Installer
         uses: caphyon/advinst-github-action@main
         with:
-          acvinst-version: '23.3'
+          advinst-version: '23.3'
           advinst-enable-automation: true
           aip-path: ${{ env.WORK_DIR }}/ConsoleDeck_Service.aip
           aip-commands:
