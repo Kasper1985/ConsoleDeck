@@ -33,7 +33,7 @@ jobs:
           aip-path: ./ConsoleDeck_Service.aip
 
       - name: List files
-        run: ls
+        run: ls './ConsoleDeck Service-SetupFiles"
 
       #- name: Install WiX Toolset
       #  run: choco install wixtoolset -y
@@ -51,7 +51,7 @@ jobs:
       - name: Upload MSI Artifact
         uses: actions/upload-artifact@v5
         with:
-          name: consoledeck_service.msi
-          path: ConsoleDeckService.msi
+          name: 'ConsoleDeck Service.msi'
+          path: './ConsoleDeck Service-SetupFiles/ConsoleDeck Service.msi'
         
         
