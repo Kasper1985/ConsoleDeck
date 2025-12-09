@@ -22,12 +22,15 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: ./release
 
+      - name: Move Advanced Installer to root folder
+        run: Move-Item -Path ./release/ConsoleDeck_Service.aip -Destination ./ConsoleDeck_Service.aip
+
       - name: MSI via Advanced Installer
         uses: caphyon/advinst-github-action@main
         with:
           advinst-version: '23.3'
           advinst-enable-automation: true
-          aip-path: ./release/ConsoleDeck_Service.aip
+          aip-path: ./ConsoleDeck_Service.aip
 
       - name: List files
         run: ls
