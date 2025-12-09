@@ -17,8 +17,8 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v5
         with:
-          run-id: 20069286654
-          artifact-ids: 4812777888
+          run-id: 20070383020
+          artifact-ids: 4813251898
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: ./release
 
@@ -33,7 +33,7 @@ jobs:
           aip-path: ./ConsoleDeck_Service.aip
 
       - name: List files
-        run: ls './ConsoleDeck Service-SetupFiles'
+        run: ls './ConsoleDeck_Service-SetupFiles'
 
       #- name: Install WiX Toolset
       #  run: choco install wixtoolset -y
@@ -51,7 +51,7 @@ jobs:
       - name: Upload MSI Artifact
         uses: actions/upload-artifact@v5
         with:
-          name: 'ConsoleDeck Service.msi'
-          path: './ConsoleDeck Service-SetupFiles/ConsoleDeck Service.msi'
+          name: 'ConsoleDeck_Service.msi'
+          path: './ConsoleDeck_Service-SetupFiles/ConsoleDeck_Service.msi'
         
         
