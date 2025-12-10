@@ -93,6 +93,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: ${{ env.WORK_DIR }}/ConsoleDeckService_v${{ env.RELEASE_VERSION }}.msi
+          tag_name: v${{ env.RELEASE_VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
