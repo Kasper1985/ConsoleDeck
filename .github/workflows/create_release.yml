@@ -43,9 +43,13 @@ jobs:
       - name: Set RELEASE_VERSION from triggering tag
         if: ${{ github.ref_type == 'tag' }}
         run: |
-          $version = '${{ github.ref_name }}'
-          if (-not $version) {
+          $raw = '${{ github.ref_name }}'
+          if (-not $raw) {
             Write-Error "github.ref_name is empty despite ref_type == 'tag'"
+          }
+          $version = $raw -replace '^v',''
+          if (-not $version) {
+            Write-Error "Stripped version is empty (source: $raw)"
           }
           "RELEASE_VERSION=$version" >> $env:GITHUB_ENV
           Write-Host "RELEASE_VERSION set to $version (from triggering tag)"
@@ -68,8 +72,12 @@ jobs:
             if (-not $latestTag) {
               Write-Error "Failed to determine latest tag from v*.*.*"
             }
-          "RELEASE_VERSION=$latestTag" >> $env:GITHUB_ENV
-          Write-Host "RELEASE_VERSION set to $latestTag (computed latest)"
+          $version = $latestTag -replace '^v',''
+          if (-not $version) {
+            Write-Error "Stripped version is empty (source: $latestTag)"
+          }
+          "RELEASE_VERSION=$version" >> $env:GITHUB_ENV
+          Write-Host "RELEASE_VERSION set to $version (computed from latest tag $latestTag)"
 
       - name: Create MSI package via Advanced Installer
         uses: caphyon/advinst-github-action@main
@@ -79,12 +87,12 @@ jobs:
           aip-path: ${{ env.WORK_DIR }}/ConsoleDeck_Service.aip
           aip-commands: |
             SetVersion '${{ env.RELEASE_VERSION }}'
-            SetPackageName ConsoleDeckService_${{ env.RELEASE_VERSION }}.msi
+            SetPackageName ConsoleDeckService_v${{ env.RELEASE_VERSION }}.msi
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ env.WORK_DIR }}/ConsoleDeckService_${{ env.RELEASE_VERSION }}.msi
+          files: ${{ env.WORK_DIR }}/ConsoleDeckService_v${{ env.RELEASE_VERSION }}.msi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
