@@ -2,9 +2,11 @@
 
 ## Current Status
 
-### ? Windows (Fully Implemented)
+### ✅ Windows (Fully Implemented)
 - **HID Monitoring**: `WindowsHidDeviceMonitor` using HidSharp
 - **System Tray**: Avalonia TrayIcon (cross-platform ready)
+- **Notifications**: `WindowsNotificationProvider` using PowerShell Toast notifications
+- **Auto-Start**: `WindowsAutoStartService` using Registry Run key
 - **Action Executor**: Fully cross-platform
 - **Status**: Production ready
 
@@ -33,20 +35,27 @@ sudo udevadm control --reload-rules
 - `/dev/hidraw*` device files
 - `udev` for device hotplug detection
 
-### ?? macOS (Planned)
-- **HID Monitoring**: `MacOSHidDeviceMonitor` (placeholder)
+### ✅ macOS (Implemented)
+- **HID Monitoring**: `MacOSHidDeviceMonitor` using HidSharp (cross-platform)
 - **System Tray**: Avalonia TrayIcon (already works)
+- **Notifications**: `MacOSNotificationProvider` using `osascript`
+- **Auto-Start**: `MacOSAutoStartService` using LaunchAgents plist
 - **Action Executor**: Already supports macOS
-- **Status**: Framework ready, HID implementation needed
+- **Status**: Fully implemented
 
-#### macOS Implementation Notes:
-**Frameworks to use:**
-- `IOKit` framework for HID device access
-- `IOHIDManager` for device discovery and input handling
-- `NSStatusItem` (Avalonia handles this)
-
+#### macOS Setup Notes:
 **Permissions:**
-- Request Input Monitoring permission in System Preferences
+- macOS may require **Input Monitoring** permission for HID device access.
+  Go to *System Settings → Privacy & Security → Input Monitoring* and allow the application.
+- macOS may require **Notifications** permission to display alerts.
+  Go to *System Settings → Notifications* and enable notifications for ConsoleDeck.
+
+**HID device access:**
+```bash
+# Verify device is detected (install hidapi for diagnostics)
+brew install hidapi
+hidtest
+```
 
 ## Architecture
 

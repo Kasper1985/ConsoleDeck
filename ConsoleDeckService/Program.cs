@@ -30,9 +30,16 @@ await Task.Delay(2000);
 var builder = Host.CreateApplicationBuilder(args);
 
 // Configure Serilog
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration) // Reads Serilog setting from appsettings.json
-    .CreateLogger();
+var loggerConfig = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration); // Reads Serilog settings from appsettings.json
+
+// Add Windows Event Log sink only on Windows
+if (OperatingSystem.IsWindows())
+{
+    loggerConfig = loggerConfig.WriteTo.EventLog("ConsoleDeckService", logName: "Application");
+}
+
+Log.Logger = loggerConfig.CreateLogger();
 
 // Integrate Serilog with the .NET logging system
 #if !DEBUG
